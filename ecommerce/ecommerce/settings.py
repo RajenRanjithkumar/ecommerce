@@ -129,3 +129,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+#to handle to open just the image as an url
+#http://127.0.0.1:8000/images/laptop.png
+MEDIA_URL = "/images/"
+
+#Image gets uploaded to this dir
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
