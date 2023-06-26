@@ -52,11 +52,15 @@ for (var i = 0; i < updateBtn.length; i++) {
     .then((response) =>{
 
             return response.json()
+            
     })
 
     .then((data) =>{
 
         console.log('data:', data)
+        //history.go(0)
+        location.reload()
+
     })
 
 
