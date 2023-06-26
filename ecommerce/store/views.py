@@ -20,7 +20,7 @@ def store(request):
     else:
         items = []
         #hard coded
-        order = {'get_cart_items':0, "get_cart_total": 0}
+        order = {'get_cart_items':0, "get_cart_total": 0, "shipping": False}
         cartItems = order['get_cart_items']
 
 
@@ -40,7 +40,7 @@ def cart(request):
     else:
         items = []
         #hard coded
-        order = {'get_cart_items':0, "get_cart_total": 0}
+        order = {'get_cart_items':0, "get_cart_total": 0 , "shipping": False}
         cartItems = order['get_cart_items']
 
 
@@ -62,7 +62,7 @@ def checkout(request):
         cartItems = order['get_cart_items']
 
 
-    context = {'items': items, 'order': order, 'cartItems': cartItems}
+    context = {'items': items, 'order': order, 'cartItems': cartItems , "shipping": False}
 
     
     return render(request, 'store/checkout.html', context)

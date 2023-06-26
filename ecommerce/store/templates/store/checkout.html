@@ -61,6 +61,8 @@
 
         <div class="box-element hidden" id="payment-info">
             <small>Paypal Options</small>
+
+            <button id="make_payment" class="btn btn-outline-success">Make Payment</button>
         </div>
 
     </div>
@@ -94,6 +96,51 @@
 
 
 </div>
+
+<!-- to hide the shipping form is a product is digital -->
+<script type="text/javascript">
+
+    var shipping = '{{order.shipping}}'
+
+    if(shipping == 'False'){
+
+        document.getElementById("shipping-info").innerHTML = ""
+    }
+
+
+    // to hide the username and email form if the user is logged in
+    // if (user != "AnonymousUser"){
+
+    //     document.getElementById("user-info").innerHTML = ""
+        
+    // }
+
+
+    var form = document.getElementById("form")
+
+    form.addEventListener('submit', function(e){
+
+        e.preventDefault()
+        console.log("Form submitted")
+        document.getElementById("form-button").classList.add('hidden')
+        document.getElementById("payment-info").classList.remove('hidden')
+
+    })
+
+
+    document.getElementById("make_payment").addEventListener('click', function(e){
+
+        submitFormData()
+    })
+
+
+    function submitFormData(){
+
+        console.log('Payment button clicked')
+    }
+
+
+</script>
 
 
 
