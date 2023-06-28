@@ -5,8 +5,8 @@ import json
 
 # Create your views here.
 
-#https://www.youtube.com/watch?v=woORrr3QNh8&list=RDCMUCTZRcDjjkVajGL6wd76UnGg&index=3
-#26:45
+#https://www.youtube.com/watch?v=woORrr3QNh8&list=RDCMUCTZRcDjjkVajGL6wd76UnGg&index=4
+#1:19:02
 
 def store(request):
 
@@ -94,7 +94,11 @@ def updateItem(request):
     if orderItem.quantity <= 0:
         orderItem.delete()
 
-
-
-
     return JsonResponse('Item was added', safe=False)
+
+def processOrder(request):
+
+
+    print('Data:', request.body)
+
+    return JsonResponse("Payment complete", safe=False)
