@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import *
 from django.http import JsonResponse
 import json
+import datetime
 
 # Create your views here.
 
@@ -80,6 +81,8 @@ def updateItem(request):
 
     customer = request.user.customer
     product = Product.objects.get( id = productId)
+
+    # query to the specific order
     order, created = Order.objects.get_or_create(customer = customer, complete = False) 
 
     orderItem, created = OrderItem.objects.get_or_create(order = order, product = product)
@@ -98,7 +101,47 @@ def updateItem(request):
 
 def processOrder(request):
 
+    # user data from front end
+    # print('Data:', request.body)
 
-    print('Data:', request.body)
+    data = json.loads(request.body)
+
+    trasaction_id = datetime.datetime.now().timestamp()
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+         # query to the specific order
+        order, created = Order.objects.get_or_create(customer = customer, complete = False) 
+        total = float(data['form']['total'])
+        order.trasacrion_id = trasaction_id
+
+        # to cross check the total cost
+        if total == order.get_cart_total:
+            order.complete = True
+
+        order.save()
+
+        if order.shipping == True:
+            ShippingAddress.objects.create(
+
+                customer = customer,
+                order = order,
+                address = data['shipping']['address'],
+                city = data['shipping']['city'],
+                state = data['shipping']['state'],
+                zipcode = data['shipping']['zipcode'],
+
+
+            )
+        # else handle for the digital products
+
+
+    else:
+        print("User not logged in")
+
+
+
+
+    # print('Data:', request.body)
 
     return JsonResponse("Payment complete", safe=False)

@@ -101,7 +101,7 @@
 <script type="text/javascript">
 
     var shipping = '{{order.shipping}}'
-    var total = '{{order.get_cart_total|floatformat:2}}'
+    var total = '{{order.get_cart_total}}'
 
     if(shipping == 'False'){
 
@@ -196,6 +196,7 @@
         .then((response)=> response.json()) 
         .then((data) => {
 
+            // redirect the user to the home page afte successfull transcation
             console.log('Success:', data);
             alert("Transaction completed");
             window.location.href = "{% url 'store'%}"
