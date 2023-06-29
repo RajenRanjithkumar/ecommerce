@@ -3,7 +3,8 @@ from .models import *
 from django.http import JsonResponse
 import json
 import datetime
-from .utils import cookieCart
+from .utils import cookieCart, cartData
+
 
 # Create your views here.
 
@@ -12,27 +13,33 @@ from .utils import cookieCart
 
 def store(request):
 
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
+    data = cartData(request)
+    order = data['order']
+    items = data['items']
+    cartItems = data['cartItems']
+
+    #moved to ulits.py
+    # if request.user.is_authenticated:
+    #     customer = request.user.customer
+    #     order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
+    #     items = order.orderitem_set.all()
+    #     cartItems = order.get_cart_items
 
 
-    else:
-        #hard coded
-        # items = []
+    # else:
+    #     #hard coded
+    #     # items = []
         
-        # order = {'get_cart_items':0, "get_cart_total": 0, "shipping": False}
+    #     # order = {'get_cart_items':0, "get_cart_total": 0, "shipping": False}
 
 
 
-        # cartItems = order['get_cart_items']
+    #     # cartItems = order['get_cart_items']
 
-        cookieData = cookieCart(request)
-        order = cookieData['order']
-        items = cookieData['items']
-        cartItems = cookieData['cartItems']
+    #     cookieData = cookieCart(request)
+    #     #order = cookieData['order']
+    #     #items = cookieData['items']
+    #     cartItems = cookieData['cartItems']
 
 
 
@@ -42,19 +49,25 @@ def store(request):
 
 def cart(request):
 
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
+    data = cartData(request)
+    order = data['order']
+    items = data['items']
+    cartItems = data['cartItems']
 
-        cookieData = cookieCart(request)
-        order = cookieData['order']
-        items = cookieData['items']
-        cartItems = cookieData['cartItems']
+    #Logic moved to ulits.py 2
+    # if request.user.is_authenticated:
+    #     customer = request.user.customer
+    #     order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
+    #     items = order.orderitem_set.all()
+    #     cartItems = order.get_cart_items
+    # else:
 
-        # Logic moved to ulits.py
+    #     cookieData = cookieCart(request)
+    #     order = cookieData['order']
+    #     items = cookieData['items']
+    #     cartItems = cookieData['cartItems']
+
+        # Logic moved to ulits.py 1
         
         # for guest users get the cart values from the cookies
         #handle if the guest cart is empty
@@ -108,17 +121,28 @@ def cart(request):
 
 def checkout(request):
 
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
+    data = cartData(request)
+    order = data['order']
+    items = data['items']
+    cartItems = data['cartItems']
+
+    #logic moved to utils.py
+    # if request.user.is_authenticated:
+    #     customer = request.user.customer
+    #     order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
+    #     items = order.orderitem_set.all()
+    #     cartItems = order.get_cart_items
         
-    else:
-        items = []
-        #hard coded
-        order = {'get_cart_items':0, "get_cart_total": 0}
-        cartItems = order['get_cart_items']
+    # else:
+    #     # items = []
+    #     # #hard coded
+    #     # order = {'get_cart_items':0, "get_cart_total": 0}
+    #     # cartItems = order['get_cart_items']
+
+    #     cookieData = cookieCart(request)
+    #     order = cookieData['order']
+    #     items = cookieData['items']
+    #     cartItems = cookieData['cartItems']
 
 
     context = {'items': items, 'order': order, 'cartItems': cartItems , "shipping": False}

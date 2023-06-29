@@ -11,7 +11,6 @@ def cookieCart(request):
     except:
         cart = {} 
 
-
     print('cart:', cart)
     items = []
     #hard coded
@@ -49,7 +48,29 @@ def cookieCart(request):
         except:
             pass
 
+    return {'items': items, 'order': order, 'cartItems': cartItems}
 
 
+def cartData(request):
+
+
+    if request.user.is_authenticated:
+        # get the data from backend db
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+        
+    else:
+        # get the data from front end cookies "cart"
+        # items = []
+        # #hard coded
+        # order = {'get_cart_items':0, "get_cart_total": 0}
+        # cartItems = order['get_cart_items']
+
+        cookieData = cookieCart(request)
+        order = cookieData['order']
+        items = cookieData['items']
+        cartItems = cookieData['cartItems']
 
     return {'items': items, 'order': order, 'cartItems': cartItems}
