@@ -74,3 +74,47 @@ def cartData(request):
         cartItems = cookieData['cartItems']
 
     return {'items': items, 'order': order, 'cartItems': cartItems}
+
+
+def guestOrder(request, data):
+
+    print("User not logged in")
+
+    print("Cookies:", request.COOKIES)
+    name = data['form']['name']
+    email = data['form']['email']
+
+    # get the cart data from the cookie
+    cookieData = cookieCart(request)
+    items = cookieData['items']
+
+    # guest user can place different orders using the same email "email->>primary key "
+    # create a guest customer using email
+    customer, created = Customer.objects.get_or_create(
+        email = email
+
+    )
+
+    customer.name = name
+    customer.save()
+
+    order = Order.objects.create(
+        
+        customer = customer,
+        complete = False,
+    )
+
+    for item in items:
+        product = Product.objects.get(id = item['product']['id'])
+
+        orderItem = OrderItem.objects.create(
+
+            product = product,
+            order = order,
+            quantity = item['quantity']
+        )
+
+
+
+
+    return customer, order

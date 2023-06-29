@@ -3,13 +3,13 @@ from .models import *
 from django.http import JsonResponse
 import json
 import datetime
-from .utils import cookieCart, cartData
+from .utils import cookieCart, cartData, guestOrder
 
 
 # Create your views here.
 
-#https://www.youtube.com/watch?v=kH2FOWuA4uI&list=PL-51WBLyFTg0omnamUjL1TCVov7yDTRng&index=5
-
+#https://www.youtube.com/watch?v=kH2FOWuA4uI&list=PL-51WBLyFTg0omnamUjL1TCVov7yDTRng&index=6
+#49:48
 
 def store(request):
 
@@ -173,10 +173,11 @@ def updateItem(request):
         orderItem.quantity = (orderItem.quantity) + 1
     elif action == 'remove':
         orderItem.quantity = (orderItem.quantity) - 1
+    
 
     orderItem.save()
 
-    if orderItem.quantity <= 0:
+    if orderItem.quantity <= 0 or action =='delete':
         orderItem.delete()
 
     return JsonResponse('Item was added', safe=False)
@@ -194,16 +195,65 @@ def processOrder(request):
         customer = request.user.customer
          # query to the specific order
         order, created = Order.objects.get_or_create(customer = customer, complete = False) 
-        total = float(data['form']['total'])
-        order.trasacrion_id = trasaction_id
+        
 
-        # to cross check the total cost
-        if total == order.get_cart_total:
-            order.complete = True
+        
+        # else handle for the digital products
 
-        order.save()
 
-        if order.shipping == True:
+    else:
+        # porcess guest user oders
+        print("User not logged in")
+
+        customer, order = guestOrder(request, data)
+
+        #moved to util.py 3
+        # print("Cookies:", request.COOKIES)
+        # name = data['form']['name']
+        # email = data['form']['email']
+
+        # # get the cart data from the cookie
+        # cookieData = cookieCart(request)
+        # items = cookieData['items']
+
+        # # guest user can place different orders using the same email "email->>primary key "
+        # customer, created = Customer.objects.get_or_create(
+        #     email = email
+
+        # )
+
+        # customer.name = name
+        # customer.save()
+
+        # order = Order.objects.create(
+            
+        #     customer = customer,
+        #     complete = False,
+        # )
+
+        # for item in items:
+        #     product = Product.objects.get(id = item['product']['id'])
+
+        #     orderItem = OrderItem.objects.create(
+
+        #         product = product,
+        #         order = order,
+        #         quantity = item['quantity']
+        #     )
+
+    
+
+
+    total = float(data['form']['total'])
+    order.trasacrion_id = trasaction_id
+
+    # to cross check the total cost
+    if total == order.get_cart_total:
+        order.complete = True
+
+    order.save()
+
+    if order.shipping == True:
             ShippingAddress.objects.create(
 
                 customer = customer,
@@ -215,11 +265,6 @@ def processOrder(request):
 
 
             )
-        # else handle for the digital products
-
-
-    else:
-        print("User not logged in")
 
 
 

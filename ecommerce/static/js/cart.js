@@ -51,18 +51,30 @@ for (var i = 0; i < updateBtn.length; i++) {
 
     if (action == 'remove'){
       //since the cart variable is in main.html we have access to it
-      
-        if(cart[productId]['quantity'] <=0){
+
+        // add a button to delete the quantity
+        if(cart[productId]['quantity'] <= 0){
 
           console.log("Remove Item")
-          delete cart[productId]
-        }
+          delete cart[productId];
+        }else{
 
-        cart[productId]['quantity'] -= 1
-
-  
+          cart[productId]['quantity'] -= 1
+        
+        }  
 
     }
+
+    if (action == 'delete'){
+      //since the cart variable is in main.html we have access to it
+
+      // delete the item
+      console.log("Remove Item")
+      delete cart[productId];
+
+    }
+
+    
 
     console.log("Cart:", cart)
     document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"

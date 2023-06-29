@@ -163,6 +163,8 @@
 
         }
 
+        userFormData.name = form.name.value
+        userFormData.email = form.email.value
 
         if(shipping != 'Fasle'){
 
@@ -181,9 +183,6 @@
 
         // }
 
-
-        userFormData.name = form.name.value
-        userFormData.email = form.email.value
 
 
 
@@ -205,6 +204,12 @@
             // redirect the user to the home page afte successfull transcation
             console.log('Success:', data);
             alert("Transaction completed");
+
+            cart = {}
+            document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
+
+
             window.location.href = "{% url 'store'%}"
 
         })
