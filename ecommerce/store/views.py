@@ -3,11 +3,12 @@ from .models import *
 from django.http import JsonResponse
 import json
 import datetime
+from .utils import cookieCart
 
 # Create your views here.
 
-#https://www.youtube.com/watch?v=woORrr3QNh8&list=RDCMUCTZRcDjjkVajGL6wd76UnGg&index=4
-#1:19:02
+#https://www.youtube.com/watch?v=kH2FOWuA4uI&list=PL-51WBLyFTg0omnamUjL1TCVov7yDTRng&index=5
+
 
 def store(request):
 
@@ -19,11 +20,19 @@ def store(request):
 
 
     else:
-        items = []
         #hard coded
-        order = {'get_cart_items':0, "get_cart_total": 0, "shipping": False}
-        cartItems = order['get_cart_items']
+        # items = []
+        
+        # order = {'get_cart_items':0, "get_cart_total": 0, "shipping": False}
 
+
+
+        # cartItems = order['get_cart_items']
+
+        cookieData = cookieCart(request)
+        order = cookieData['order']
+        items = cookieData['items']
+        cartItems = cookieData['cartItems']
 
 
 
@@ -39,11 +48,60 @@ def cart(request):
         items = order.orderitem_set.all()
         cartItems = order.get_cart_items
     else:
-        items = []
-        #hard coded
-        order = {'get_cart_items':0, "get_cart_total": 0 , "shipping": False}
-        cartItems = order['get_cart_items']
 
+        cookieData = cookieCart(request)
+        order = cookieData['order']
+        items = cookieData['items']
+        cartItems = cookieData['cartItems']
+
+        # Logic moved to ulits.py
+        
+        # for guest users get the cart values from the cookies
+        #handle if the guest cart is empty
+        
+        # try:
+        #     cart = json.loads(request.COOKIES['cart'])
+        # except:
+        #     cart = {} 
+
+
+        # print('cart:', cart)
+        # items = []
+        # #hard coded
+        # order = {'get_cart_items':0, "get_cart_total": 0 , "shipping": False}
+        # cartItems = order['get_cart_items']
+        
+        # for i in cart:
+        #     # try block to handle if the cookie has a product that have been removed from the db
+        #     try:
+        #         cartItems += cart[i]['quantity']
+
+        #         product = Product.objects.get(id = i)
+
+        #         total = (product.price * cart[i]['quantity'])
+
+        #         order['get_cart_total'] += total
+        #         order['get_cart_items'] += cart[i]['quantity']
+
+        #         item = {
+        #             'product':{
+
+        #                 'id': product.id,
+        #                 'name': product.name,
+        #                 'price': product.price,
+        #                 'imageURL': product.imageURL
+        #             },
+        #             'quantity': cart[i]['quantity'],
+        #             'get_total': total
+        #         }
+
+        #         items.append(item)
+
+        #         if product.digital == False:
+        #             order['shipping'] = True
+        #     except:
+        #         pass
+            
 
     context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(request, 'store/cart.html', context)

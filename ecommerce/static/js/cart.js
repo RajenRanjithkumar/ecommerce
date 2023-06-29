@@ -16,7 +16,8 @@ for (var i = 0; i < updateBtn.length; i++) {
       console.log("User", user)
       if(user == "AnonymousUser"){
 
-        console.log("Not logged in")
+        //guest user
+        addCookieItem(productId, action)
 
       }else{
         //console.log("User logged in")
@@ -26,6 +27,48 @@ for (var i = 0; i < updateBtn.length; i++) {
 
       
     });
+  }
+
+  function addCookieItem(productId, action){
+
+    console.log("Not logged in")
+
+
+    if (action == 'add'){
+      //since the cart variable is in main.html we have access to it
+      if (cart[productId] == undefined){
+
+        cart[productId] = {'quantity': 1}
+
+      }else{
+
+        cart[productId]['quantity'] += 1
+
+      }
+
+    }
+
+
+    if (action == 'remove'){
+      //since the cart variable is in main.html we have access to it
+      
+        if(cart[productId]['quantity'] <=0){
+
+          console.log("Remove Item")
+          delete cart[productId]
+        }
+
+        cart[productId]['quantity'] -= 1
+
+  
+
+    }
+
+    console.log("Cart:", cart)
+    document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    location.reload()
+
+
   }
 
   function updateUserOrder(productId, action){

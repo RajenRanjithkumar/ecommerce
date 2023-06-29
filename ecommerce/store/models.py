@@ -15,7 +15,7 @@ class Customer(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, null=True )
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     digital = models.BooleanField(default=False, null=True, blank=False)
     #this requires the pillow lib
     image = models.ImageField(null=True, blank=True)
@@ -60,6 +60,8 @@ class Order(models.Model):
         orderitems = self.orderitem_set.all()
         total = sum([item.get_total for item in orderitems])
         return total
+    
+    #gets all the cart items from the DB
     @property
     def get_cart_items(self):
         orderitems = self.orderitem_set.all()
