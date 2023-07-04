@@ -1,15 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
+from django.contrib import messages  
 from django.http import JsonResponse
 import json
 import datetime
 from .utils import cookieCart, cartData, guestOrder
+from .forms import CreateCustomerForm
 
 
 # Create your views here.
 
 #https://www.youtube.com/watch?v=kH2FOWuA4uI&list=PL-51WBLyFTg0omnamUjL1TCVov7yDTRng&index=6
 #49:48
+
+
+
+
+
 
 def store(request):
 
@@ -46,6 +53,43 @@ def store(request):
     products = Product.objects.all()
     context = {'products': products, 'cartItems': cartItems}
     return render(request, 'store/store.html', context)
+
+
+def login(request):
+
+    page = "login"
+
+    context = {"page": page}
+
+
+    return render(request, 'store/login.html', context) 
+
+def register(request):
+
+    form = CreateCustomerForm()
+
+    if request.method == 'POST':
+        form = CreateCustomerForm(request.POST)
+        if form.is_valid():
+            
+            user = form.save(commit=False)
+
+            user.username = user.username.lower()
+            user.save()
+
+            
+
+            #login(request, user)
+            return redirect('store')
+        else:
+
+            messages.error(request, "An error occured during registration")
+
+    context = {'form': form}
+    return render(request, 'store/login.html', context) 
+
+
+
 
 def cart(request):
 
@@ -208,50 +252,26 @@ def processOrder(request):
         customer, order = guestOrder(request, data)
 
         #moved to util.py 3
-        # print("Cookies:", request.COOKIES)
-        # name = data['form']['name']
-        # email = data['form']['email']
-
-        # # get the cart data from the cookie
-        # cookieData = cookieCart(request)
-        # items = cookieData['items']
-
-        # # guest user can place different orders using the same email "email->>primary key "
-        # customer, created = Customer.objects.get_or_create(
-        #     email = email
-
-        # )
-
-        # customer.name = name
-        # customer.save()
-
-        # order = Order.objects.create(
-            
-        #     customer = customer,
-        #     complete = False,
-        # )
-
-        # for item in items:
-        #     product = Product.objects.get(id = item['product']['id'])
-
-        #     orderItem = OrderItem.objects.create(
-
-        #         product = product,
-        #         order = order,
-        #         quantity = item['quantity']
-        #     )
-
-    
-
+        
 
     total = float(data['form']['total'])
     order.trasacrion_id = trasaction_id
 
     # to cross check the total cost
-    if total == order.get_cart_total:
+
+    print(round(total))
+    print(round(order.get_cart_total))
+    if round(total) == round(order.get_cart_total):
         order.complete = True
 
-    order.save()
+    print(order.trasacrion_id)
+    print(order.customer)
+    print(order.complete)
+    
+
+    
+     
+
 
     if order.shipping == True:
             ShippingAddress.objects.create(
@@ -270,5 +290,6 @@ def processOrder(request):
 
 
     # print('Data:', request.body)
+    order.save()
 
     return JsonResponse("Payment complete", safe=False)
