@@ -7,6 +7,9 @@ import datetime
 from .utils import cookieCart, cartData, guestOrder
 from .forms import CreateCustomerForm
 
+from django.contrib.auth.forms import UserCreationForm  #djangos default form
+from django.contrib.auth import authenticate, login, logout
+
 
 # Create your views here.
 
@@ -55,18 +58,46 @@ def store(request):
     return render(request, 'store/store.html', context)
 
 
-def login(request):
+def loginUser(request):
 
     page = "login"
 
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    
+
+    if username != '' and password != '':
+        try:
+            user = User.objects.get(username = username)
+            customer = Customer(user=user)
+            customer.save()
+        except:
+
+            messages.error(request, " User does not exist ") #Django flash messages
+    else:
+        messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+    
+
+    customer = authenticate(request, username=username, password=password)
+
+    if customer is not None:
+        login(request, user)
+        return redirect('store')
+    
+    else:
+        messages.error(request, "Username or password does not exist")
+
+
+
     context = {"page": page}
-
-
     return render(request, 'store/login.html', context) 
 
-def register(request):
+def registerUser(request):
 
     form = CreateCustomerForm()
+    
 
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
@@ -74,13 +105,20 @@ def register(request):
             
             user = form.save(commit=False)
 
+            
             user.username = user.username.lower()
             user.save()
 
-            
+            # #login(request, user)
 
-            #login(request, user)
-            return redirect('store')
+            Customer.objects.create(
+
+                user = user,
+                name = user.username,
+                email = user.email
+
+            )
+            return redirect('login')
         else:
 
             messages.error(request, "An error occured during registration")
