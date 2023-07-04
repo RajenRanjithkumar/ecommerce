@@ -331,3 +331,10 @@ def processOrder(request):
     order.save()
 
     return JsonResponse("Payment complete", safe=False)
+
+
+def logoutUser(request):
+    
+    logout(request)
+
+    return redirect('login')

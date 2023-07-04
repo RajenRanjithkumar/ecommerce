@@ -72,6 +72,11 @@ h1,h2,h3,h4,h5,h6{
 	border-radius: 10;
 }
 
+.bt-color{
+
+	background-color: black;
+}
+
 .row-image{
 	width: 100px;
 	box-shadow:hsl(0, 0%, 60%) 0 0 2px;
