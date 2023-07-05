@@ -60,6 +60,14 @@ def store(request):
 
 def loginUser(request):
 
+
+    data = cartData(request)
+    order = data['order']
+    items = data['items']
+    cartItems = data['cartItems']
+            
+
+
     page = "login"
 
     username = request.POST.get('username')
@@ -91,7 +99,7 @@ def loginUser(request):
 
 
 
-    context = {"page": page}
+    context = {"page": page, 'cartItems': cartItems}
     return render(request, 'store/login.html', context) 
 
 def registerUser(request):
