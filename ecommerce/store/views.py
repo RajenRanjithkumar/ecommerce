@@ -9,6 +9,7 @@ from .forms import CreateCustomerForm
 
 from django.contrib.auth.forms import UserCreationForm  #djangos default form
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
@@ -79,8 +80,8 @@ def loginUser(request):
     if username != '' and password != '':
         try:
             user = User.objects.get(username = username)
-            customer = Customer(user=user)
-            customer.save()
+            #customerName = Customer.objects.get(user = user)
+           
         except:
 
             messages.error(request, " User does not exist ") #Django flash messages
@@ -89,10 +90,25 @@ def loginUser(request):
 
     
     customer = authenticate(request, username=username, password=password)
+    
+    
 
     if customer is not None:
-        login(request, user)
-        return redirect('store')
+
+        try:
+            customerObj = Customer.objects.get(user = customer)
+
+            #customerObj = get_object_or_404(Customer, user = customer)
+            print("Is customer", customerObj.name)
+            if customerObj.name is not None:
+                login(request, user)
+                return redirect('store')
+            else:
+                messages.error(request, "Username or password does not exist")
+        except Customer.DoesNotExist:
+            customerObj = None
+            #messages.error(request, "Username or password does not exist")
+        #h
     
     else:
         messages.error(request, "Username or password does not exist")
@@ -148,8 +164,8 @@ def loginSeller(request):
     if username != '' and password != '':
         try:
             user = User.objects.get(username = username)
-            seller = Seller(user=user)
-            seller.save()
+            # seller = Seller(user=user)
+            # seller.save()
         except:
 
             messages.error(request, " Seller does not exist ") #Django flash messages
@@ -157,14 +173,29 @@ def loginSeller(request):
         messages.error(request, " Username or password cannot be empty ") #Django flash messages
 
     
-    authSeller = authenticate(request, username=username, password=password)
+    seller = authenticate(request, username=username, password=password)
 
-    if authSeller is not None:
-        login(request, user)
-        return redirect('seller_profile')
-    
+    if seller is not None:
+
+        try:
+            sellerObj = Seller.objects.get(user = seller)
+            #print("Is customer", customerName.name)
+            if sellerObj.name is not None:
+
+                login(request, user)
+                return redirect('seller_profile')
+            
+            else:
+                messages.error(request, "Sellername or password does not exist")
+
+        except Seller.DoesNotExist:
+            #sellerObj = None
+            messages.error(request, "Sellername or password does not exist")
+
+
+
     else:
-        messages.error(request, "Username or password does not exist")
+        messages.error(request, "Sellername or password does not exist")
 
     context = {"page": page}
     return render(request, 'store/seller_login.html', context)
@@ -219,65 +250,7 @@ def cart(request):
     cartItems = data['cartItems']
 
     #Logic moved to ulits.py 2
-    # if request.user.is_authenticated:
-    #     customer = request.user.customer
-    #     order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
-    #     items = order.orderitem_set.all()
-    #     cartItems = order.get_cart_items
-    # else:
-
-    #     cookieData = cookieCart(request)
-    #     order = cookieData['order']
-    #     items = cookieData['items']
-    #     cartItems = cookieData['cartItems']
-
-        # Logic moved to ulits.py 1
-        
-        # for guest users get the cart values from the cookies
-        #handle if the guest cart is empty
-        
-        # try:
-        #     cart = json.loads(request.COOKIES['cart'])
-        # except:
-        #     cart = {} 
-
-
-        # print('cart:', cart)
-        # items = []
-        # #hard coded
-        # order = {'get_cart_items':0, "get_cart_total": 0 , "shipping": False}
-        # cartItems = order['get_cart_items']
-        
-        # for i in cart:
-        #     # try block to handle if the cookie has a product that have been removed from the db
-        #     try:
-        #         cartItems += cart[i]['quantity']
-
-        #         product = Product.objects.get(id = i)
-
-        #         total = (product.price * cart[i]['quantity'])
-
-        #         order['get_cart_total'] += total
-        #         order['get_cart_items'] += cart[i]['quantity']
-
-        #         item = {
-        #             'product':{
-
-        #                 'id': product.id,
-        #                 'name': product.name,
-        #                 'price': product.price,
-        #                 'imageURL': product.imageURL
-        #             },
-        #             'quantity': cart[i]['quantity'],
-        #             'get_total': total
-        #         }
-
-        #         items.append(item)
-
-        #         if product.digital == False:
-        #             order['shipping'] = True
-        #     except:
-        #         pass
+    
             
 
     context = {'items': items, 'order': order, 'cartItems': cartItems}
@@ -291,24 +264,7 @@ def checkout(request):
     cartItems = data['cartItems']
 
     #logic moved to utils.py
-    # if request.user.is_authenticated:
-    #     customer = request.user.customer
-    #     order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
-    #     items = order.orderitem_set.all()
-    #     cartItems = order.get_cart_items
-        
-    # else:
-    #     # items = []
-    #     # #hard coded
-    #     # order = {'get_cart_items':0, "get_cart_total": 0}
-    #     # cartItems = order['get_cart_items']
-
-    #     cookieData = cookieCart(request)
-    #     order = cookieData['order']
-    #     items = cookieData['items']
-    #     cartItems = cookieData['cartItems']
-
-
+    
     context = {'items': items, 'order': order, 'cartItems': cartItems , "shipping": False}
 
     
