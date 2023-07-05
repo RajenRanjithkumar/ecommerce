@@ -1,0 +1,142 @@
+
+{% load static %}
+<head>
+    <title>Ecom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+
+{% block content %}
+
+
+{% if page ==  "login" %}
+
+
+<div class="loginform">
+    <div class="card" >
+        <div class="container">
+            <div class="layout__boxTitle" style="text-align: center;">
+                <h3>Seller Login</h3>
+            </div>
+            <form class="form" method="POST" action="">
+                {% csrf_token %}
+    
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Username</label>
+                    
+                    <input id="username" class="form-control" name="username" type="text" placeholder="e.g. dennis_ivy" />
+        
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    
+    
+                    <input  class="form-control" id="password" name="password" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" />
+    
+                  </div>
+    
+    
+                
+    
+                <div style="text-align: center;">
+                    <button class="btn btn-outline-success"  type="submit">
+                        Login
+                        </button>
+    
+                        <br>
+                    <div style="margin-top: 1rem;">
+                        <p style="margin-bottom: 0.01rem;">Want to sell things?</p>
+                        <a href="{% url 'seller_register' %}" class="btn btn-outline-success">Sign Up</a>
+                        
+                    </div>
+    
+                    
+    
+                    
+    
+                </div>
+                
+            </form>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="{% url 'store' %}" class="">Take me to marketplace</a>
+    
+            </div>
+            
+    
+    
+        </div>
+        
+    
+    
+    
+    </div>
+
+
+
+</div>
+   
+
+
+{% else %}
+
+<div class="loginform">
+
+    <div class="card" style="padding: 1rem;">
+        <div class="layout__box">
+            <div class="layout__boxHeader">
+            <div class="layout__boxTitle" style="text-align: center;">
+                <h3>Register Seller</h3>
+            </div>
+            </div>
+            <div class="layout__body">
+    
+            <form class="form" method="POST" action="">
+                {% csrf_token %}
+                
+                
+                {% for field in form %}
+    
+                <div class="form-group">
+                <label for="room_name">{{field.label}}</label>
+                {{field}}
+                </div>
+    
+                {% endfor %}
+    
+                <div style="text-align: center;">
+    
+                    <button class="btn btn btn-outline-success" type="submit">
+                        Register
+                        </button>
+                        <div style="margin-top: 1rem;">
+                            <p style="margin-bottom: -0.01rem;">Signed up already?</p>
+                            <a href="{% url 'seller_login' %}" class="btn btn-outline-success">Login</a>
+                        </div>
+    
+    
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="{% url 'store' %}" class="">Take me to marketplace</a>
+        
+                </div>
+                
+    
+            </form>
+    
+            
+    
+            
+            </div>
+        </div>
+        </div>
+
+
+</div>
+
+
+
+{% endif %}
+
+{% endblock content %}

@@ -1,5 +1,71 @@
 import json
 from .models import *
+from django.contrib import messages  
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+
+
+
+# def loginUsers(request, isSeller:bool):
+
+    
+    
+
+
+#     username = request.POST.get('username')
+#     password = request.POST.get('password')
+    
+#     if isSeller:
+#         #login as Seller
+        
+        
+#         if username != '' and password != '':
+#             try:
+#                 user = User.objects.get(username = username)
+#                 seller = Seller(user=user)
+#                 seller.save()
+#             except:
+
+#                 messages.error(request, " User does not exist ") #Django flash messages
+#         else:
+#             messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+#         seller = authenticate(request, username=username, password=password)
+
+#         if seller is not None:
+#             login(request, user)
+#             return redirect('seller_profile')
+        
+#         else:
+#             messages.error(request, "Username or password does not exist")
+
+
+#     else:
+#         #login as customer
+
+
+#         if username != '' and password != '':
+#             try:
+#                 user = User.objects.get(username = username)
+#                 customer = Customer(user=user)
+#                 customer.save()
+#             except:
+
+#                 messages.error(request, " User does not exist ") #Django flash messages
+#         else:
+#             messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+#         customer = authenticate(request, username=username, password=password)
+        
+#         if customer is not None:
+#             login(request, user)
+#             redirect('store')
+        
+#         else:
+#             messages.error(request, "Username or password does not exist")
+
+
+
 
 
 def cookieCart(request):

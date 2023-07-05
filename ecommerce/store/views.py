@@ -60,7 +60,7 @@ def store(request):
 
 def loginUser(request):
 
-
+    
     data = cartData(request)
     order = data['order']
     items = data['items']
@@ -70,6 +70,7 @@ def loginUser(request):
 
     page = "login"
 
+    
     username = request.POST.get('username')
     password = request.POST.get('password')
 
@@ -87,7 +88,6 @@ def loginUser(request):
         messages.error(request, " Username or password cannot be empty ") #Django flash messages
 
     
-
     customer = authenticate(request, username=username, password=password)
 
     if customer is not None:
@@ -133,6 +133,80 @@ def registerUser(request):
 
     context = {'form': form}
     return render(request, 'store/login.html', context) 
+
+
+
+def loginSeller(request):
+
+    page = 'login'
+
+    
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    
+    if username != '' and password != '':
+        try:
+            user = User.objects.get(username = username)
+            seller = Seller(user=user)
+            seller.save()
+        except:
+
+            messages.error(request, " Seller does not exist ") #Django flash messages
+    else:
+        messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+    
+    authSeller = authenticate(request, username=username, password=password)
+
+    if authSeller is not None:
+        login(request, user)
+        return redirect('seller_profile')
+    
+    else:
+        messages.error(request, "Username or password does not exist")
+
+    context = {"page": page}
+    return render(request, 'store/seller_login.html', context)
+
+def registerSeller(request):
+
+    form = CreateCustomerForm()
+
+
+    if request.method == 'POST':
+        form = CreateCustomerForm(request.POST)
+        if form.is_valid():
+            
+            user = form.save(commit=False)
+
+            
+            user.username = user.username.lower()
+            user.save()
+
+            # #login(request, user)
+
+            Seller.objects.create(
+
+                user = user,
+                name = user.username,
+                email = user.email
+
+            )
+            return redirect('seller_login')
+        else:
+
+            messages.error(request, "An error occured during registration")
+
+    context = {'form':form}
+    return render(request, 'store/seller_login.html', context)
+
+
+def sellerProfile(request):
+
+    context = {}
+
+    return render(request, "store/seller_profile.html", context)
 
 
 
