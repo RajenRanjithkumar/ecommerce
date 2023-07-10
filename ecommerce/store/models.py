@@ -31,7 +31,7 @@ class Product(models.Model):
     #this requires the pillow lib
     image = models.ImageField(null=True, blank=True)
     seller = models.ForeignKey(Seller, null=True, on_delete=models.CASCADE)
-    customers = models.ManyToManyField(Customer, blank=True)
+    #customers = models.ManyToManyField(Customer, blank=True)
 
 
     def __str__(self):
