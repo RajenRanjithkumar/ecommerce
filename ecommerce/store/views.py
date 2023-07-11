@@ -280,6 +280,64 @@ def sellerAddProduct(request):
 
     return render(request, "store/seller_add_product.html", context)
 
+@login_required(login_url='seller_login')
+def sellerUpdateProduct(request, pk):
+
+    product = Product.objects.get(id = pk)
+    
+    if request.user != product.seller.user:
+        return JsonResponse("Product is sold by someone else", safe=False)
+        
+    
+    #fill the form with existing data
+    form = ProductForm(instance=product)
+
+    if request.method == 'POST':
+
+        form = ProductForm(request.POST, request.FILES, instance=product)
+
+        if form.is_valid():
+            
+            product = form.save()
+
+            # Product.objects.create(
+
+            #     name = form.cleaned_data['name'],
+            #     price = form.cleaned_data['price'],
+            #     digital = form.cleaned_data['digital'],
+            #     image = form.cleaned_data['image'],
+            #     seller = request.user.seller
+            # )
+
+            #return JsonResponse('Item was added', safe=False)
+            return redirect("seller_products")
+
+
+
+
+
+
+
+    context = {'form': form}
+    return render(request, "store/seller_add_product.html", context)
+    # return JsonResponse(product.price, safe=False)
+        
+
+
+
+
+
+    
+
+    
+
+    
+
+
+
+
+
+
 
 
 
