@@ -250,7 +250,7 @@ def sellerAddProduct(request):
     
     if request.method == 'POST':
         
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
 
         if form.is_valid():
             
