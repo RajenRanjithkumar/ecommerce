@@ -184,7 +184,7 @@ def loginSeller(request):
             if sellerObj.name is not None:
 
                 login(request, user)
-                return redirect('seller_profile')
+                return redirect('seller_products')
             
             else:
                 messages.error(request, "Sellername or password does not exist")
@@ -233,15 +233,18 @@ def registerSeller(request):
     context = {'form':form}
     return render(request, 'store/seller_login.html', context)
 
+@login_required(login_url='seller_login')
+def sellerProducts(request):
 
-def sellerProfile(request):
+
+    products = Product.objects.filter(seller = request.user.seller)
 
     
-    context = {}
+    context = {"products":products}
 
-    return render(request, "store/seller_profile.html", context)
+    return render(request, "store/seller_products.html", context)
 
-@login_required(login_url='login')
+@login_required(login_url='seller_login')
 def sellerAddProduct(request):
 
     
@@ -266,7 +269,7 @@ def sellerAddProduct(request):
             )
 
             #return JsonResponse('Item was added', safe=False)
-            return redirect("seller_profile")
+            return redirect("seller_products")
        
 
 
@@ -414,3 +417,9 @@ def logoutUser(request):
     logout(request)
 
     return redirect('login')
+
+def logoutSeller(request):
+    
+    logout(request)
+
+    return redirect('seller_login')

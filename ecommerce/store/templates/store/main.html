@@ -97,7 +97,12 @@
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="#">Settings</a>
+
+                {% if siteUser == "customer" %}
                 <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
+                {% else %}
+                <a class="dropdown-item" href="{% url 'seller_logout' %}">Sign out</a>
+                {% endif %}
               
               </div>
             </div>
