@@ -1,0 +1,34 @@
+{% extends 'store/main.html' %}
+
+{% block content %}
+
+<h2>Sell Product</h2>
+
+
+<div>
+
+    <form class="form" method="POST" action="">
+        {% csrf_token %}
+
+        {% for field in form %}
+
+        <div class="form__group form__group">
+        <label for="room_name">{{field.label}}</label>
+        {{field}}
+        <!-- <input id="username" name="username" type="text" placeholder="e.g. dennis_ivy" /> -->
+        </div>
+
+        {% endfor %}
+
+    
+        <button class="btn btn-outline-success"  type="submit">
+            Sell Product
+            </button>
+    </form>
+
+</div>
+
+
+
+
+{% endblock content %}

@@ -10,8 +10,8 @@ urlpatterns = [
     path('seller_login/', views.loginSeller, name='seller_login'),
     path('seller_register/', views.registerSeller, name='seller_register'),
 
-     path('seller_profile/', views.sellerProfile, name='seller_profile'),
-
+    path('seller_profile/', views.sellerProfile, name='seller_profile'),
+    path('seller_add_product/', views.sellerAddProduct, name='seller_add_product'),
 
     path('logout/', views.logoutUser, name='logout'),
     path('cart/', views.cart, name='cart'),

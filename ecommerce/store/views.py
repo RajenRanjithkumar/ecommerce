@@ -5,8 +5,8 @@ from django.http import JsonResponse
 import json
 import datetime
 from .utils import cookieCart, cartData, guestOrder
-from .forms import CreateCustomerForm
-
+from .forms import CreateCustomerForm, ProductForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm  #djangos default form
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
@@ -28,6 +28,7 @@ def store(request):
     order = data['order']
     items = data['items']
     cartItems = data['cartItems']
+    siteUser = "customer"
 
     #moved to ulits.py
     # if request.user.is_authenticated:
@@ -55,7 +56,7 @@ def store(request):
 
 
     products = Product.objects.all()
-    context = {'products': products, 'cartItems': cartItems}
+    context = {'products': products, 'cartItems': cartItems, 'siteUser':siteUser}
     return render(request, 'store/store.html', context)
 
 
@@ -235,9 +236,46 @@ def registerSeller(request):
 
 def sellerProfile(request):
 
+    
     context = {}
 
     return render(request, "store/seller_profile.html", context)
+
+@login_required(login_url='login')
+def sellerAddProduct(request):
+
+    
+    form = ProductForm()
+
+    
+    if request.method == 'POST':
+        
+        form = ProductForm(request.POST)
+
+        if form.is_valid():
+            
+            #product = form.save()
+
+            Product.objects.create(
+
+                name = form.cleaned_data['name'],
+                price = form.cleaned_data['price'],
+                digital = form.cleaned_data['digital'],
+                image = form.cleaned_data['image'],
+                seller = request.user.seller
+            )
+
+            #return JsonResponse('Item was added', safe=False)
+            return redirect("seller_profile")
+       
+
+
+
+
+    context = {"form": form}
+    
+
+    return render(request, "store/seller_add_product.html", context)
 
 
 

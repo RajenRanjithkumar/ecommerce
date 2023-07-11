@@ -112,11 +112,19 @@
             {% endif %}
 
             
-
+            {% if siteUser == "customer" %}
             <a href="{% url 'cart' %}">
                <img  id="cart-icon" src="{% static 'images/cart.png' %}">
            </a>
            <p id="cart-total">{{cartItems}}</p>
+
+           {% else %}
+
+           <a class="navbar-brand" style="padding-left: 1rem;" href="{% url 'seller_add_product' %}">Sell a product</a>
+
+            
+
+           {% endif %}
 
 
        </div>
