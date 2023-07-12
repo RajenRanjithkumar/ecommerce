@@ -2,29 +2,53 @@
 
 {% block content %}
 
-<h2>Sell Product</h2>
 
 
-<div>
 
-    <form class="form" method="POST" enctype="multipart/form-data" action="">
-        {% csrf_token %}
-
-        {% for field in form %}
-
-        <div class="form__group form__group">
-        <label for="room_name">{{field.label}}</label>
-        {{field}}
-        <!-- <input id="username" name="username" type="text" placeholder="e.g. dennis_ivy" /> -->
-        </div>
-
-        {% endfor %}
+<div class="container">
 
     
-        <button class="btn btn-outline-success"  type="submit">
-            Sell Product
+
+
+    <div class="add_product">
+        <h2 style="text-align: center; margin-bottom: 1rem;"><strong>Product Details</strong></h2>
+
+
+        
+        <form class="form" method="POST" enctype="multipart/form-data" action="">
+            {% csrf_token %}
+            
+
+            <!-- {{ form.as_p }} -->
+
+
+
+            {% for field in form  %}
+
+            <div class="form__group">
+            {% if field.label == 'Digital' %}    
+            <label for="room_name">Is product Digitally?</label>
+            {% else %}
+            <label for="room_name">{{field.label}}</label>
+            {% endif %}
+            <br>
+            {{field}}
+            
+        
+            </div>
+
+            {% endfor %}  
+
+        
+            <button class="btn btn-outline-success"  type="submit">
+                Sell Product
             </button>
-    </form>
+        </form> 
+
+    </div>
+
+
+    
 
 </div>
 
