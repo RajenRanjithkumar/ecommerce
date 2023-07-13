@@ -42,7 +42,9 @@ def store(request):
     q = request.GET.get('q') if request.GET.get('q') != None else '' 
      #print(type(int(category)))
     products = Product.objects.filter(
-        Q(name__icontains = q),
+        Q(name__icontains = q)|
+        Q(category__icontains = q)
+
         
     )
 
@@ -51,9 +53,11 @@ def store(request):
 
     category = request.GET.get('category') if request.GET.get('category') != None else ''
     if category:
+
+        print(type(category))
         products = Product.objects.filter(
-            category = int(category),
-            
+
+            category = category
         )
 
     

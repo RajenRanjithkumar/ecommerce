@@ -27,10 +27,10 @@ class Seller(models.Model):
 class Product(models.Model):
 
     CHOICES = (
-        (1, 'Phones'),
-        (2, 'Laptops'),
-        (3, 'Tablets'),
-        (4, 'Digital'),
+        ('Phones', 'Phones'),
+        ('Laptop', 'Laptops'),
+        ('Tablets', 'Tablets'),
+        ('Digital', 'Digital'),
     )
 
     name = models.CharField(max_length=100, null=True )
@@ -40,7 +40,7 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True)
     seller = models.ForeignKey(Seller, null=True, on_delete=models.CASCADE)
     #customers = models.ManyToManyField(Customer, blank=True)
-    category = models.IntegerField(choices=CHOICES, null=True)
+    category = models.CharField(choices=CHOICES, null=True, max_length=20)
 
 
 
