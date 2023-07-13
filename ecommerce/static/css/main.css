@@ -43,7 +43,7 @@ h1,h2,h3,h4,h5,h6{
 }
 
 .bg-dark{
-	background-color: #0098b6c7!important;
+	background-color: #002c35!important;
 }
 
 #cart-icon{
@@ -128,7 +128,7 @@ h1,h2,h3,h4,h5,h6{
 
 .card {
 
-	
+	background-color: rgb(235, 235, 235);
 	width: 25rem;	
 	margin: auto;
 	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -146,6 +146,7 @@ h1,h2,h3,h4,h5,h6{
 
   .add_product {
 
+	background-color: rgb(235, 235, 235);
 	height: fit-content;
 	width: 25rem;
 	padding: 2rem;	
@@ -181,3 +182,5 @@ h1,h2,h3,h4,h5,h6{
 
 
   }
+
+
