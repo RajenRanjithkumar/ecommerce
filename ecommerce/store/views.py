@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm  #djangos default form
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
+from django.db.models import Q # to include or/and condition for queries 
 
 
 # Create your views here.
@@ -54,8 +55,15 @@ def store(request):
     #     cartItems = cookieData['cartItems']
 
 
+    #search for products
+    q = request.GET.get('q') if request.GET.get('q') != None else '' 
+    products = Product.objects.filter(
+        Q(name__icontains = q)
+    )
 
-    products = Product.objects.all()
+    
+
+    #products = Product.objects.all()
     context = {'products': products, 'cartItems': cartItems, 'siteUser':siteUser}
     return render(request, 'store/store.html', context)
 
@@ -201,10 +209,11 @@ def loginSeller(request):
     context = {"page": page}
     return render(request, 'store/seller_login.html', context)
 
+
+
 def registerSeller(request):
 
     form = CreateCustomerForm()
-
 
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
@@ -237,7 +246,16 @@ def registerSeller(request):
 def sellerProducts(request):
 
 
-    products = Product.objects.filter(seller = request.user.seller)
+     #search for products
+    q = request.GET.get('q') if request.GET.get('q') != None else '' 
+    products = Product.objects.filter(
+        Q(name__icontains = q), 
+        seller = request.user.seller,
+        
+    )
+
+
+    #products = Product.objects.filter(seller = request.user.seller)
 
     
     context = {"products":products}

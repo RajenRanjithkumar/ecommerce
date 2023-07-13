@@ -80,12 +80,33 @@
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'store' %}">Store <span class="sr-only">(current)</span></a>
             </li>
+
+            {% if siteUser == "customer" %}
+
+            <li class="nav-item active" style="padding-left: 1rem;">
+              <form class="form-inline" style="text-align: center;" action="{% url 'store' %}">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                <button class="btn btn btn-danger my-2 my-sm-0" type="submit">Search</button>
+              </form>
+            </li>
+
+            {% else %}
+
+            <li class="nav-item active" style="padding-left: 1rem;">
+              <form class="form-inline" style="text-align: center;" action="{% url 'seller_products' %}">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                <button class="btn btn btn-danger my-2 my-sm-0" type="submit">Search</button>
+              </form>
+            </li>
+
+            {% endif %}
+
+            
+
+           
             
           </ul>
-          <!-- <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form> -->
+          
         <div class="form-inline my-2 my-lg-0">
             {% if request.user.is_authenticated %}
             <!-- <a href="#"class="btn btn-outline-dark">Hello {{request.user.username}}!!</a> -->
