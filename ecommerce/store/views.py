@@ -31,40 +31,37 @@ def store(request):
     cartItems = data['cartItems']
     siteUser = "customer"
 
-    #moved to ulits.py
-    # if request.user.is_authenticated:
-    #     customer = request.user.customer
-    #     order, created = Order.objects.get_or_create(customer = customer, complete = False) # find the order if not create it
-    #     items = order.orderitem_set.all()
-    #     cartItems = order.get_cart_items
+    categories = Product.CHOICES
 
+    print(categories)
 
-    # else:
-    #     #hard coded
-    #     # items = []
-        
-    #     # order = {'get_cart_items':0, "get_cart_total": 0, "shipping": False}
-
-
-
-    #     # cartItems = order['get_cart_items']
-
-    #     cookieData = cookieCart(request)
-    #     #order = cookieData['order']
-    #     #items = cookieData['items']
-    #     cartItems = cookieData['cartItems']
+   
 
 
     #search for products
     q = request.GET.get('q') if request.GET.get('q') != None else '' 
+     #print(type(int(category)))
     products = Product.objects.filter(
-        Q(name__icontains = q)
+        Q(name__icontains = q),
+        
     )
 
     
 
+
+    category = request.GET.get('category') if request.GET.get('category') != None else ''
+    if category:
+        products = Product.objects.filter(
+            category = int(category),
+            
+        )
+
+    
+
     #products = Product.objects.all()
-    context = {'products': products, 'cartItems': cartItems, 'siteUser':siteUser}
+    context = {'products': products, 'cartItems': cartItems, 'siteUser':siteUser, 'categories': categories}
+
+
     return render(request, 'store/store.html', context)
 
 
@@ -365,24 +362,31 @@ def cart(request):
     order = data['order']
     items = data['items']
     cartItems = data['cartItems']
+    siteUser = "customer"
 
     #Logic moved to ulits.py 2
     
             
 
-    context = {'items': items, 'order': order, 'cartItems': cartItems}
+    context = {'items': items, 'order': order, 'cartItems': cartItems, 'siteUser':siteUser}
     return render(request, 'store/cart.html', context)
 
 def checkout(request):
+
 
     data = cartData(request)
     order = data['order']
     items = data['items']
     cartItems = data['cartItems']
+    siteUser = "customer"
 
     #logic moved to utils.py
     
-    context = {'items': items, 'order': order, 'cartItems': cartItems , "shipping": False}
+    context = {'items': items, 
+               'order': order, 
+               'cartItems': cartItems , 
+               "shipping": False, 
+               "siteUser": siteUser}
 
     
     return render(request, 'store/checkout.html', context)
@@ -421,6 +425,8 @@ def updateItem(request):
 
 def processOrder(request):
 
+    
+
     # user data from front end
     # print('Data:', request.body)
 
@@ -434,9 +440,7 @@ def processOrder(request):
         order, created = Order.objects.get_or_create(customer = customer, complete = False) 
         
 
-        
         # else handle for the digital products
-
 
     else:
         # porcess guest user oders
@@ -461,10 +465,6 @@ def processOrder(request):
     print(order.customer)
     print(order.complete)
     
-
-    
-     
-
 
     if order.shipping == True:
             ShippingAddress.objects.create(
