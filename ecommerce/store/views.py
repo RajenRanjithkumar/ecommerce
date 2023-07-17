@@ -60,7 +60,10 @@ def store(request):
     
 
     #products = Product.objects.all()
-    context = {'products': products, 'cartItems': cartItems, 'siteUser':siteUser, 'categories': categories}
+    context = {'products': products, 
+               'cartItems': cartItems, 
+               'siteUser':siteUser, 
+               'categories': categories}
 
 
     return render(request, 'store/store.html', context)
@@ -360,11 +363,14 @@ def productDetails(request, pk):
     cartItems = data['cartItems']
     siteUser = "customer"
 
+    #navbar 
+    categories = Product.CHOICES
+
     product = Product.objects.get(id = pk)
 
     
 
-    context = {'siteUser':siteUser, 'cartItems':cartItems, 'product': product}
+    context = {'siteUser':siteUser, 'cartItems':cartItems, 'product': product, 'categories':categories}
 
     return render(request, 'store/product_details.html', context)
 

@@ -119,7 +119,7 @@ def cookieCart(request):
 
 def cartData(request):
 
-
+    
     if request.user.is_authenticated:
         # get the data from backend db
         customer = request.user.customer

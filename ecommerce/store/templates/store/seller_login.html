@@ -89,16 +89,17 @@
                 <h3>Register Seller</h3>
             </div>
             </div>
-            <div class="layout__body">
+            <div class="layout__body" >
     
-            <form class="form" method="POST" action="">
+            <form class="form"  method="POST" action="">
                 {% csrf_token %}
                 
                 
                 {% for field in form %}
     
-                <div class="form-group">
-                <label for="room_name">{{field.label}}</label>
+                <div class="form-group" >
+                <label for="room_name" >{{field.label}}</label>
+                <br>
                 {{field}}
                 </div>
     

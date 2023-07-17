@@ -13,9 +13,12 @@
             <!-- <img class= "thumbnail" src="{% static 'images/placeholder.png' %}" > -->
             
             <div class="box-element product">
-                <img class= "thumbnail" src="{{product.imageURL}}" >
+
+                <div style="text-align: center;">
+                    <img class= "thumbnail"  src="{{product.imageURL}}" >
+                </div>
                 
-                <h6><strong>{{product.name}}</strong></h6>
+                <h6 style="margin-top: 1rem;"><strong>{{product.name}}</strong></h6>
 
                 <h6>Seller: {{product.seller}}</h6>
                 <hr>
