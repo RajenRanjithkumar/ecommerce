@@ -48,12 +48,9 @@ def store(request):
         
     )
 
-    
-
-
+    # Filter products according to categories
     category = request.GET.get('category') if request.GET.get('category') != None else ''
     if category:
-
         print(type(category))
         products = Product.objects.filter(
 
@@ -67,6 +64,11 @@ def store(request):
 
 
     return render(request, 'store/store.html', context)
+
+
+
+
+
 
 
 def loginUser(request):
@@ -350,7 +352,21 @@ def sellerUpdateProduct(request, pk):
 
     
 
+def productDetails(request, pk):
+
+    data = cartData(request)
+    order = data['order']
+    items = data['items']
+    cartItems = data['cartItems']
+    siteUser = "customer"
+
+    product = Product.objects.get(id = pk)
+
     
+
+    context = {'siteUser':siteUser, 'cartItems':cartItems, 'product': product}
+
+    return render(request, 'store/product_details.html', context)
 
 
 
