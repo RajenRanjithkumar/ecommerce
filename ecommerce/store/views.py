@@ -328,22 +328,29 @@ def sellerAddProduct(request):
 @login_required(login_url='seller_login')
 def sellerUpdateProduct(request, pk):
 
+    ImageFormSet = modelformset_factory(Images, form=ImageForm, extra=3)
+
     product = Product.objects.get(id = pk)
+    
     
     if request.user != product.seller.user:
         return JsonResponse("Product is sold by someone else", safe=False)
         
     
     #fill the form with existing data
-    form = ProductForm(instance=product)
+    product_form = ProductForm(instance=product)
+    formset = ImageFormSet(queryset=Images.objects.filter(product = product))
 
     if request.method == 'POST':
 
-        form = ProductForm(request.POST, request.FILES, instance=product)
+        product_form = ProductForm(request.POST, request.FILES, instance=product)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=Images.objects.filter(product = product))
 
-        if form.is_valid():
+        if product_form.is_valid() and formset.is_valid():
             
-            product = form.save()
+            product = product_form.save()
+
+            formset.save()
 
             # Product.objects.create(
 
@@ -358,12 +365,7 @@ def sellerUpdateProduct(request, pk):
             return redirect("seller_products")
 
 
-
-
-
-
-
-    context = {'form': form}
+    context = {'form': product_form, 'formset': formset}
     return render(request, "store/seller_add_product.html", context)
     # return JsonResponse(product.price, safe=False)
         
@@ -388,10 +390,11 @@ def productDetails(request, pk):
     categories = Product.CHOICES
 
     product = Product.objects.get(id = pk)
-
+    otherImages = Images.objects.filter(product = product)
+    print(otherImages)
     
 
-    context = {'siteUser':siteUser, 'cartItems':cartItems, 'product': product, 'categories':categories}
+    context = {'siteUser':siteUser, 'cartItems':cartItems, 'product': product, 'otherImages': otherImages, 'categories':categories}
 
     return render(request, 'store/product_details.html', context)
 

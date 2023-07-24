@@ -39,6 +39,18 @@ h1,h2,h3,h4,h5,h6{
 	width: auto;
 	height: 200px;
 	border-radius: 10px 10px 0 0;
+	
+	/* -webkit-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    -moz-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    box-shadow: -1px -3px 5px -2px rgba(214,214,214,1); */
+
+}
+
+.thumbnail_detail{
+	width: 70px;
+	height: 70px;
+	border-radius: 10px 10px 0 0;
+	object-fit: contain;
 	/* -webkit-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
     -moz-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
     box-shadow: -1px -3px 5px -2px rgba(214,214,214,1); */

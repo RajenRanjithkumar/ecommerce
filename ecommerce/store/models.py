@@ -64,6 +64,14 @@ class Images(models.Model):
 
     product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
     images = models.ImageField(null=True, blank=True)
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.images.url
+        except:
+            url = ""
+        return url
     
 
 
