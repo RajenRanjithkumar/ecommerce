@@ -22,7 +22,8 @@ class Seller(models.Model):
         return self.name
 
 
-    
+# https://stackoverflow.com/questions/34006994/how-to-upload-multiple-images-to-a-blog-post-in-django
+# implement this
 
 class Product(models.Model):
 

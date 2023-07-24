@@ -8,11 +8,11 @@
 
         {% for product in products %}
 
-        <div class="col-lg-4">
+        <div class="col-lg-4" onclick="location.href = '{% url 'product' product.id%}';" >
             
             <!-- <img class= "thumbnail" src="{% static 'images/placeholder.png' %}" > -->
             
-            <div class="box-element product">
+            <div class="box-element product" style="cursor: pointer;">
 
                 <div style="text-align: center;">
                     <img class= "thumbnail"  src="{{product.imageURL}}" >
