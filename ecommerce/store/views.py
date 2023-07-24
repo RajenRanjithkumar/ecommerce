@@ -37,9 +37,6 @@ def store(request):
 
     print(categories)
 
-   
-
-
     #search for products
     q = request.GET.get('q') if request.GET.get('q') != None else '' 
      #print(type(int(category)))
@@ -302,7 +299,7 @@ def sellerAddProduct(request):
             )
 
             
-
+            
             for form in formset.cleaned_data:
                 #this helps to not crash if the user   
                 #do not upload all the photos

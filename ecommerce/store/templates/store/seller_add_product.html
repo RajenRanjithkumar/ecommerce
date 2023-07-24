@@ -37,16 +37,20 @@
 
             {% endfor %} 
 
+            <label> Upload Other Images of the Product:</label>
+
             {{ formset.management_form }}
             {% for form in formset %}
-                {{ form }}
+
+                <div style="margin-bottom: 1rem;">
+                    {{ form }}
+                </div>
+                
+        
             {% endfor %}
             
             
-            
-            
-            
-            <div style="text-align: center;">
+            <div style="text-align: center; margin-top: 1rem;">
                 <button class="btn btn-outline-success"   type="submit">
                     Sell Product
                 </button>

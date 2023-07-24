@@ -17,7 +17,9 @@ class ProductForm(ModelForm):
         exclude = ['seller']
 
 class ImageForm(ModelForm):
-    #image = forms.ImageField(label='Image')    
+    images = forms.ImageField(label='')    
     class Meta:
         model = Images
         fields = ('images', )
+
+    
