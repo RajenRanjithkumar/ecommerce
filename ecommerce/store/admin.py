@@ -6,6 +6,7 @@ from .models import *
 # Register your models here.
 admin.site.register(Customer)   
 admin.site.register(Seller)
+admin.site.register(Images)
 admin.site.register(Product)
 admin.site.register(Order)
 admin.site.register(OrderItem)

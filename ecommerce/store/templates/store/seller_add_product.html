@@ -21,8 +21,6 @@
 
             <!-- {{ form.as_p }} -->
 
-
-
             {% for field in form  %}
 
             <div class="form__group" style="margin-bottom: 1rem;">
@@ -37,11 +35,24 @@
         
             </div>
 
-            {% endfor %}  
+            {% endfor %} 
 
-            <button class="btn btn-outline-success"  type="submit">
-                Sell Product
-            </button>
+            {{ formset.management_form }}
+            {% for form in formset %}
+                {{ form }}
+            {% endfor %}
+            
+            
+            
+            
+            
+            <div style="text-align: center;">
+                <button class="btn btn-outline-success"   type="submit">
+                    Sell Product
+                </button>
+
+            </div>
+            
         </form> 
 
     </div>

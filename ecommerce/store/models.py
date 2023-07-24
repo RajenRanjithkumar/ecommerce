@@ -58,6 +58,14 @@ class Product(models.Model):
         except:
             url = ""
         return url
+    
+
+class Images(models.Model):
+
+    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
+    images = models.ImageField(null=True, blank=True)
+    
+
 
     
 class Order(models.Model):

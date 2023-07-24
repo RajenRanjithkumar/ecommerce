@@ -5,12 +5,14 @@ from django.http import JsonResponse
 import json
 import datetime
 from .utils import cookieCart, cartData, guestOrder
-from .forms import CreateCustomerForm, ProductForm
+from .forms import CreateCustomerForm, ProductForm, ImageForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm  #djangos default form
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
 from django.db.models import Q # to include or/and condition for queries 
+
+from django.forms import modelformset_factory # for uploading multiple images
 
 
 # Create your views here.
@@ -271,26 +273,48 @@ def sellerProducts(request):
 @login_required(login_url='seller_login')
 def sellerAddProduct(request):
 
-    
-    form = ProductForm()
+    ImageFormSet = modelformset_factory(Images, form=ImageForm, extra=3)
 
+    product_form = ProductForm()
+    formset = ImageFormSet(queryset=Images.objects.none())
+    
     
     if request.method == 'POST':
         
-        form = ProductForm(request.POST, request.FILES)
+        product_form = ProductForm(request.POST, request.FILES)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=Images.objects.none())
 
-        if form.is_valid():
+        if product_form.is_valid() and formset.is_valid():
             
             #product = form.save()
 
-            Product.objects.create(
+            product_instance = Product.objects.create(
 
-                name = form.cleaned_data['name'],
-                price = form.cleaned_data['price'],
-                digital = form.cleaned_data['digital'],
-                image = form.cleaned_data['image'],
-                seller = request.user.seller
+                name = product_form.cleaned_data['name'],
+                price = product_form.cleaned_data['price'],
+                brand = product_form.cleaned_data['brand'],
+                description = product_form.cleaned_data['description'],
+                digital = product_form.cleaned_data['digital'],
+                image = product_form.cleaned_data['image'],
+                seller = request.user.seller,
+                category = product_form.cleaned_data['category']
+
             )
+
+            
+
+            for form in formset.cleaned_data:
+                #this helps to not crash if the user   
+                #do not upload all the photos
+                if form:
+                    image = form['images']
+                    photo = Images(product = product_instance, images=image)
+                    photo.save()
+
+             # use django messages framework
+            messages.success(request,
+                             "Yeeew, check it out on the home page!")
+
 
             #return JsonResponse('Item was added', safe=False)
             return redirect("seller_products")
@@ -299,7 +323,7 @@ def sellerAddProduct(request):
 
 
 
-    context = {"form": form}
+    context = {"form": product_form, 'formset': formset}
     
 
     return render(request, "store/seller_add_product.html", context)
