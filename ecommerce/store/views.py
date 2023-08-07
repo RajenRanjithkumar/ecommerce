@@ -264,7 +264,6 @@ def sellerProducts(request):
 
     #products = Product.objects.filter(seller = request.user.seller)
 
-    
     context = {"products":products}
 
     return render(request, "store/seller_products.html", context)

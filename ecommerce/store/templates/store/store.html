@@ -5,7 +5,7 @@
 {% block content %}
 
     <div class="row">
-
+       
         {% for product in products %}
 
         <div class="col-lg-4" onclick="location.href = '{% url 'product' product.id%}';" >
@@ -31,6 +31,15 @@
         </div>
 
         {% endfor %}
+
+        {%if products|length == 0 %}
+
+        <div class="container">
+            <h1 style="text-align:center " > No products found</h1>
+        
+        </div>
+
+        {% endif %}
 
         
         
