@@ -205,3 +205,9 @@ h1,h2,h3,h4,h5,h6{
   }
 
 
+.form-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50vh; /* This will center the form vertically */
+}

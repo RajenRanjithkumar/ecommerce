@@ -85,49 +85,51 @@ def loginUser(request):
 
     page = "login"
 
-    
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        storage = messages.get_messages(request)
+        storage.used = True
+
+        if username != '' and password != '':
+            try:
+                user = User.objects.get(username = username)
+                #customerName = Customer.objects.get(user = user)
+                
+            except:
+
+                messages.error(request, " User does not exist ") #Django flash messages
+        else:
+            messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+
+        customer = authenticate(request, username=username, password=password)
+
+
+
+        if customer is not None:
+
+            try:
+                customerObj = Customer.objects.get(user = customer)
+
+                #customerObj = get_object_or_404(Customer, user = customer)
+                print("Is customer", customerObj.name)
+                if customerObj.name is not None:
+                    login(request, user)
+                    messages.error(request, None)
+                    return redirect('store')
+                else:
+                    messages.error(request, "Username or password does not exist")
+            except Customer.DoesNotExist:
+                customerObj = None
+                #messages.error(request, "Username or password does not exist")
+            
+
+        # else:
+        #     messages.error(request, "User does not exist") 
 
     
-
-    if username != '' and password != '':
-        try:
-            user = User.objects.get(username = username)
-            #customerName = Customer.objects.get(user = user)
-           
-        except:
-
-            messages.error(request, " User does not exist ") #Django flash messages
-    else:
-        messages.error(request, " Username or password cannot be empty ") #Django flash messages
-
-    
-    customer = authenticate(request, username=username, password=password)
-    
-    
-
-    if customer is not None:
-
-        try:
-            customerObj = Customer.objects.get(user = customer)
-
-            #customerObj = get_object_or_404(Customer, user = customer)
-            print("Is customer", customerObj.name)
-            if customerObj.name is not None:
-                login(request, user)
-                return redirect('store')
-            else:
-                messages.error(request, "Username or password does not exist")
-        except Customer.DoesNotExist:
-            customerObj = None
-            #messages.error(request, "Username or password does not exist")
-        #h
-    
-    else:
-        messages.error(request, "Username or password does not exist")
-
-
 
     context = {"page": page, 'cartItems': cartItems}
     return render(request, 'store/login.html', context) 
