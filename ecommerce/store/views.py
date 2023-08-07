@@ -341,6 +341,7 @@ def sellerUpdateProduct(request, pk):
     product_form = ProductForm(instance=product)
     formset = ImageFormSet(queryset=Images.objects.filter(product = product))
 
+    # update the form
     if request.method == 'POST':
 
         product_form = ProductForm(request.POST, request.FILES, instance=product)

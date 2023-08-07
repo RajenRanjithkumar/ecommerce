@@ -40,13 +40,16 @@
             <label> Upload Other Images of the Product:</label>
 
             
+            <!-- {{formsetOtherImages.as_p}} -->
 
+            
             {{ formset.management_form }}
-            {% for form in formset %}
+            {% for layout in formset|slice:":3" %}
 
                 <div style="margin-bottom: 1rem;">
-                    {{ form }}
+                    {{ layout }}
                 </div>
+                <br>
                 
         
             {% endfor %}
