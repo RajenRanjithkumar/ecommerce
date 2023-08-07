@@ -138,3 +138,13 @@ MEDIA_URL = "/images/"
 
 #Image gets uploaded to this dir
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
+
+# Set session expiration to 5 minutes
+SESSION_COOKIE_AGE = 300  # 5 minutes in seconds
+
+# Extend session expiration on each request
+# this helps us to expire the session when there's continous inactivity for 5 mins = 300s
+# not while the user is browsing through the website
+SESSION_SAVE_EVERY_REQUEST = True
+
