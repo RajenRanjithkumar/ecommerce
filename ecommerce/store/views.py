@@ -70,316 +70,6 @@ def store(request):
 
 
 
-
-
-
-def loginUser(request):
-
-    
-    data = cartData(request)
-    order = data['order']
-    items = data['items']
-    cartItems = data['cartItems']
-            
-
-
-    page = "login"
-
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        storage = messages.get_messages(request)
-        storage.used = True
-
-        if username != '' and password != '':
-            try:
-                user = User.objects.get(username = username)
-                #customerName = Customer.objects.get(user = user)
-                
-            except:
-
-                messages.error(request, " User does not exist ") #Django flash messages
-        else:
-            messages.error(request, " Username or password cannot be empty ") #Django flash messages
-
-
-        customer = authenticate(request, username=username, password=password)
-
-
-
-        if customer is not None:
-
-            try:
-                customerObj = Customer.objects.get(user = customer)
-
-                #customerObj = get_object_or_404(Customer, user = customer)
-                print("Is customer", customerObj.name)
-                if customerObj.name is not None:
-                    login(request, user)
-                    messages.error(request, None)
-                    return redirect('store')
-                else:
-                    messages.error(request, "Username or password does not exist")
-            except Customer.DoesNotExist:
-                customerObj = None
-                #messages.error(request, "Username or password does not exist")
-            
-
-        # else:
-        #     messages.error(request, "User does not exist") 
-
-    
-
-    context = {"page": page, 'cartItems': cartItems}
-    return render(request, 'store/login.html', context) 
-
-def registerUser(request):
-
-    form = CreateCustomerForm()
-    
-
-    if request.method == 'POST':
-        form = CreateCustomerForm(request.POST)
-        if form.is_valid():
-            
-            user = form.save(commit=False)
-
-            
-            user.username = user.username.lower()
-            user.save()
-
-            # #login(request, user)
-
-            Customer.objects.create(
-
-                user = user,
-                name = user.username,
-                email = user.email
-
-            )
-            return redirect('login')
-        else:
-
-            messages.error(request, "An error occured during registration")
-
-    context = {'form': form}
-    return render(request, 'store/login.html', context) 
-
-
-
-def loginSeller(request):
-
-    page = 'login'
-
-    
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-
-    
-    if username != '' and password != '':
-        try:
-            user = User.objects.get(username = username)
-            # seller = Seller(user=user)
-            # seller.save()
-        except:
-
-            messages.error(request, " Seller does not exist ") #Django flash messages
-    else:
-        messages.error(request, " Username or password cannot be empty ") #Django flash messages
-
-    
-    seller = authenticate(request, username=username, password=password)
-
-    if seller is not None:
-
-        try:
-            sellerObj = Seller.objects.get(user = seller)
-            #print("Is customer", customerName.name)
-            if sellerObj.name is not None:
-
-                login(request, user)
-                return redirect('seller_products')
-            
-            else:
-                messages.error(request, "Sellername or password does not exist")
-
-        except Seller.DoesNotExist:
-            #sellerObj = None
-            messages.error(request, "Sellername or password does not exist")
-
-
-
-    else:
-        messages.error(request, "Sellername or password does not exist")
-
-    context = {"page": page}
-    return render(request, 'store/seller_login.html', context)
-
-
-
-def registerSeller(request):
-
-    form = CreateCustomerForm()
-
-    if request.method == 'POST':
-        form = CreateCustomerForm(request.POST)
-        if form.is_valid():
-            
-            user = form.save(commit=False)
-
-            
-            user.username = user.username.lower()
-            user.save()
-
-            # #login(request, user)
-
-            Seller.objects.create(
-
-                user = user,
-                name = user.username,
-                email = user.email
-
-            )
-            return redirect('seller_login')
-        else:
-
-            messages.error(request, "An error occured during registration")
-
-    context = {'form':form}
-    return render(request, 'store/seller_login.html', context)
-
-@login_required(login_url='seller_login')
-def sellerProducts(request):
-
-
-     #search for products
-    q = request.GET.get('q') if request.GET.get('q') != None else '' 
-    products = Product.objects.filter(
-        Q(name__icontains = q), 
-        seller = request.user.seller,
-        
-    )
-
-
-    #products = Product.objects.filter(seller = request.user.seller)
-
-    context = {"products":products}
-
-    return render(request, "store/seller_products.html", context)
-
-@login_required(login_url='seller_login')
-def sellerAddProduct(request):
-
-    ImageFormSet = modelformset_factory(Images, form=ImageForm, extra=3)
-
-    product_form = ProductForm()
-    formset = ImageFormSet(queryset=Images.objects.none())
-    
-    
-    if request.method == 'POST':
-        
-        product_form = ProductForm(request.POST, request.FILES)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=Images.objects.none())
-
-        if product_form.is_valid() and formset.is_valid():
-            
-            #product = form.save()
-
-            product_instance = Product.objects.create(
-
-                name = product_form.cleaned_data['name'],
-                price = product_form.cleaned_data['price'],
-                brand = product_form.cleaned_data['brand'],
-                description = product_form.cleaned_data['description'],
-                digital = product_form.cleaned_data['digital'],
-                image = product_form.cleaned_data['image'],
-                seller = request.user.seller,
-                category = product_form.cleaned_data['category']
-
-            )
-
-            
-            
-            for form in formset.cleaned_data:
-                #this helps to not crash if the user   
-                #do not upload all the photos
-                if form:
-                    image = form['images']
-                    photo = Images(product = product_instance, images=image)
-                    photo.save()
-
-             # use django messages framework
-            messages.success(request,
-                             "Yeeew, check it out on the home page!")
-
-
-            #return JsonResponse('Item was added', safe=False)
-            return redirect("seller_products")
-       
-
-
-
-
-    context = {"form": product_form, 'formset': formset}
-    
-
-    return render(request, "store/seller_add_product.html", context)
-
-@login_required(login_url='seller_login')
-def sellerUpdateProduct(request, pk):
-
-    ImageFormSet = modelformset_factory(Images, form=ImageForm, extra=3)
-
-    product = Product.objects.get(id = pk)
-    
-    
-    if request.user != product.seller.user:
-        return JsonResponse("Product is sold by someone else", safe=False)
-        
-    
-    #fill the form with existing data
-    product_form = ProductForm(instance=product)
-    formset = ImageFormSet(queryset=Images.objects.filter(product = product))
-
-    # update the form
-    if request.method == 'POST':
-
-        product_form = ProductForm(request.POST, request.FILES, instance=product)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=Images.objects.filter(product = product))
-
-        if product_form.is_valid() and formset.is_valid():
-            
-            product = product_form.save()
-
-            formset.save()
-
-            # Product.objects.create(
-
-            #     name = form.cleaned_data['name'],
-            #     price = form.cleaned_data['price'],
-            #     digital = form.cleaned_data['digital'],
-            #     image = form.cleaned_data['image'],
-            #     seller = request.user.seller
-            # )
-
-            #return JsonResponse('Item was added', safe=False)
-            return redirect("seller_products")
-
-
-    context = {'form': product_form, 'formset': formset}
-    return render(request, "store/seller_add_product.html", context)
-    # return JsonResponse(product.price, safe=False)
-        
-
-
-
-
-
-    
-
-    
-
 def productDetails(request, pk):
 
     data = cartData(request)
@@ -399,12 +89,6 @@ def productDetails(request, pk):
     context = {'siteUser':siteUser, 'cartItems':cartItems, 'product': product, 'otherImages': otherImages, 'categories':categories}
 
     return render(request, 'store/product_details.html', context)
-
-
-
-
-
-
 
 
 
@@ -532,12 +216,112 @@ def processOrder(request):
             )
 
 
-
-
     # print('Data:', request.body)
     order.save()
 
     return JsonResponse("Payment complete", safe=False)
+
+
+
+
+
+
+
+
+
+
+def loginUser(request):
+
+    
+    data = cartData(request)
+    order = data['order']
+    items = data['items']
+    cartItems = data['cartItems']
+            
+
+
+    page = "login"
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # storage = messages.get_messages(request)
+        # storage.used = True
+
+        if username != '' and password != '':
+            try:
+                user = User.objects.get(username = username)
+                #customerName = Customer.objects.get(user = user)
+                
+            except:
+
+                messages.error(request, " User does not exist ") #Django flash messages
+        else:
+            messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+
+        customer = authenticate(request, username=username, password=password)
+
+
+
+        if customer is not None:
+
+            try:
+                customerObj = Customer.objects.get(user = customer)
+
+                #customerObj = get_object_or_404(Customer, user = customer)
+                print("Is customer", customerObj.name)
+                if customerObj.name is not None:
+                    login(request, user)
+                    messages.error(request, None)
+                    return redirect('store')
+                else:
+                    messages.error(request, "Username or password does not exist")
+            except Customer.DoesNotExist:
+                customerObj = None
+                #messages.error(request, "Username or password does not exist")
+            
+
+        else:
+            messages.error(request, "Username or password does not exist") 
+
+    
+
+    context = {"page": page, 'cartItems': cartItems}
+    return render(request, 'store/login.html', context) 
+
+def registerUser(request):
+
+    form = CreateCustomerForm()
+    
+
+    if request.method == 'POST':
+        form = CreateCustomerForm(request.POST)
+        if form.is_valid():
+            
+            user = form.save(commit=False)
+
+            
+            user.username = user.username.lower()
+            user.save()
+
+            # #login(request, user)
+
+            Customer.objects.create(
+
+                user = user,
+                name = user.username,
+                email = user.email
+
+            )
+            return redirect('login')
+        else:
+
+            messages.error(request, "An error occured during registration")
+
+    context = {'form': form}
+    return render(request, 'store/login.html', context) 
 
 
 def logoutUser(request):
@@ -545,6 +329,247 @@ def logoutUser(request):
     logout(request)
 
     return redirect('login')
+
+
+
+
+
+
+
+
+# Seller routes
+
+
+
+def loginSeller(request):
+
+    page = 'login'
+
+    
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    
+    if username != '' and password != '':
+        try:
+            user = User.objects.get(username = username)
+            # seller = Seller(user=user)
+            # seller.save()
+        except:
+
+            messages.error(request, " Seller does not exist ") #Django flash messages
+    else:
+        messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+    
+    seller = authenticate(request, username=username, password=password)
+
+    if seller is not None:
+
+        try:
+            sellerObj = Seller.objects.get(user = seller)
+            #print("Is customer", customerName.name)
+            if sellerObj.name is not None:
+
+                login(request, user)
+                return redirect('seller_products')
+            
+            else:
+                messages.error(request, "Sellername or password does not exist")
+
+        except Seller.DoesNotExist:
+            #sellerObj = None
+            messages.error(request, "Sellername or password does not exist")
+
+
+
+    else:
+        messages.error(request, "Sellername or password does not exist")
+
+    context = {"page": page}
+    return render(request, 'store/seller_login.html', context)
+
+
+
+def registerSeller(request):
+
+    form = CreateCustomerForm()
+
+    if request.method == 'POST':
+        form = CreateCustomerForm(request.POST)
+        if form.is_valid():
+            
+            user = form.save(commit=False)
+
+            
+            user.username = user.username.lower()
+            user.save()
+
+            # #login(request, user)
+
+            Seller.objects.create(
+
+                user = user,
+                name = user.username,
+                email = user.email
+
+            )
+            return redirect('seller_login')
+        else:
+
+            messages.error(request, "An error occured during registration")
+
+    context = {'form':form}
+    return render(request, 'store/seller_login.html', context)
+
+
+
+@login_required(login_url='seller_login')
+def sellerProducts(request):
+
+
+     #search for products
+    q = request.GET.get('q') if request.GET.get('q') != None else '' 
+    products = Product.objects.filter(
+        Q(name__icontains = q), 
+        seller = request.user.seller,
+        
+    )
+
+
+    #products = Product.objects.filter(seller = request.user.seller)
+
+    context = {"products":products}
+
+    return render(request, "store/seller_products.html", context)
+
+@login_required(login_url='seller_login')
+def sellerAddProduct(request):
+
+    ImageFormSet = modelformset_factory(Images, form=ImageForm, extra=3)
+
+    product_form = ProductForm()
+    formset = ImageFormSet(queryset=Images.objects.none())
+    
+    
+    if request.method == 'POST':
+        
+        product_form = ProductForm(request.POST, request.FILES)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=Images.objects.none())
+
+        if product_form.is_valid() and formset.is_valid():
+            
+            #product = form.save()
+
+            product_instance = Product.objects.create(
+
+                name = product_form.cleaned_data['name'],
+                price = product_form.cleaned_data['price'],
+                brand = product_form.cleaned_data['brand'],
+                description = product_form.cleaned_data['description'],
+                digital = product_form.cleaned_data['digital'],
+                image = product_form.cleaned_data['image'],
+                seller = request.user.seller,
+                category = product_form.cleaned_data['category']
+
+            )
+
+            
+            
+            for form in formset.cleaned_data:
+                #this helps to not crash if the user   
+                #do not upload all the photos
+                if form:
+                    image = form['images']
+                    photo = Images(product = product_instance, images=image)
+                    photo.save()
+
+             # use django messages framework
+            messages.success(request,
+                             "Yeeew, check it out on the home page!")
+
+
+            #return JsonResponse('Item was added', safe=False)
+            return redirect("seller_products")
+       
+
+
+
+
+    context = {"form": product_form, 'formset': formset}
+    
+
+    return render(request, "store/seller_add_product.html", context)
+
+@login_required(login_url='seller_login')
+def sellerUpdateProduct(request, pk):
+
+    ImageFormSet = modelformset_factory(Images, form=ImageForm, extra=3)
+
+    product = Product.objects.get(id = pk)
+    
+    
+    if request.user != product.seller.user:
+        return JsonResponse("Product is sold by someone else", safe=False)
+        
+    
+    #fill the form with existing data
+    product_form = ProductForm(instance=product)
+    formset = ImageFormSet(queryset=Images.objects.filter(product = product))
+
+    # update the form
+    if request.method == 'POST':
+
+        product_form = ProductForm(request.POST, request.FILES, instance=product)
+        formset = ImageFormSet(request.POST, request.FILES, queryset=Images.objects.filter(product = product))
+
+        if product_form.is_valid() and formset.is_valid():
+            
+            product = product_form.save()
+
+            formset.save()
+
+            # Product.objects.create(
+
+            #     name = form.cleaned_data['name'],
+            #     price = form.cleaned_data['price'],
+            #     digital = form.cleaned_data['digital'],
+            #     image = form.cleaned_data['image'],
+            #     seller = request.user.seller
+            # )
+
+            #return JsonResponse('Item was added', safe=False)
+            return redirect("seller_products")
+
+
+    context = {'form': product_form, 'formset': formset}
+    return render(request, "store/seller_add_product.html", context)
+    # return JsonResponse(product.price, safe=False)
+
+@login_required(login_url='seller_login')
+def sellerDeleteProduct(request, pk):
+
+    product = Product.objects.get(id = pk)
+
+    
+    if product:
+        print(product.name + " deleted successfully!!")
+        product.delete()
+        
+    
+    
+    return redirect("seller_products")
+
+
+    
+
+
+
+
+    
+
+        
+
 
 def logoutSeller(request):
     

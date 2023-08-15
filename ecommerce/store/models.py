@@ -84,7 +84,7 @@ class Order(models.Model):
     trasacrion_id = models.CharField(max_length=200, null=True)
 
     def __str__(self):
-        return str(self.id)
+        return f"Order #{self.id}"
     
     @property
     def shipping(self):

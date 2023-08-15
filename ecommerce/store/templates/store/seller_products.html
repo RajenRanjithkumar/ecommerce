@@ -3,6 +3,10 @@
 {% block content %}
 <h1>Your Products</h1>
 
+<div id="alertContainer" class="alert alert-info alert-dismissible fade" style="display:none;">
+    This is a Bootstrap alert message.
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+</div>
 
 <div class="row">
 
@@ -15,7 +19,7 @@
         <div class="box-element product">
 
             <div style="text-align: center;">
-                <img class= "thumbnail" src="{{product.imageURL}}" >
+                <img class="thumbnail" src="{{product.imageURL}}" >
             </div>
            
             
@@ -26,11 +30,49 @@
             <!-- <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-cart">Edit Product</button>  -->
             <a href="#" class="btn btn-outline-success">View </a>
             <a href="{% url 'seller_update_product' product.id%}" class="btn btn-outline-success">Update </a>
+            <!-- <a href="#" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModalCenter">Remove </a> -->
+
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter{{product.id}}">
+                Remove
+            </button>
+
+            
             
             <h4 style="display: inline-block; float: right;">${{product.price|floatformat:2}}</h4>
+
         </div>
 
+
     </div>
+
+
+    <div class="modal fade" id="exampleModalCenter{{product.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Remove product "{{product.name}}"</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove this product?</p>
+            </div>
+            <div class="modal-footer">
+                <!-- <a type="button" class="btn btn-outline-dark" data-dismiss="modal">No</a>
+                <a type="button" class="btn btn-danger" href="{% url 'seller_delete_product' product.id%}">Yes</a> -->
+
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" id="showAlertButton" class="btn btn-primary" onclick="location.href='{% url 'seller_delete_product' product.id%}'">Yes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+
 
     {% endfor %}
 
@@ -43,4 +85,9 @@
 
 
 
+
+
 {% endblock content %}
+
+
+    
