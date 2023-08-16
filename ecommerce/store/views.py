@@ -345,46 +345,53 @@ def loginSeller(request):
 
     page = 'login'
 
-    
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-    
-    if username != '' and password != '':
-        try:
-            user = User.objects.get(username = username)
-            # seller = Seller(user=user)
-            # seller.save()
-        except:
+        
+        if username != '' and password != '':
+            try:
+                user = User.objects.get(username = username)
+                # seller = Seller(user=user)
+                # seller.save()
+                seller = authenticate(request, username=username, password=password)
+                if seller is not None:
 
-            messages.error(request, " Seller does not exist ") #Django flash messages
-    else:
-        messages.error(request, " Username or password cannot be empty ") #Django flash messages
+                    try:
+                        sellerObj = Seller.objects.get(user = seller)
+                        #print("Is customer", customerName.name)
+                        if sellerObj.name is not None:
 
-    
-    seller = authenticate(request, username=username, password=password)
+                            login(request, user)
+                            messages.error(request, None)
+                            return redirect('seller_products')
+                
+                    # else:
+                    #     messages.error(request, "Sellername or password does not exist")
 
-    if seller is not None:
+                    except Seller.DoesNotExist:
+                        #sellerObj = None
+                        messages.error(request, "Sellername or password does not exist")
+                else:
+                    messages.error(request, "Sellername or password incorrect")
 
-        try:
-            sellerObj = Seller.objects.get(user = seller)
-            #print("Is customer", customerName.name)
-            if sellerObj.name is not None:
+            except:
 
-                login(request, user)
-                return redirect('seller_products')
+                messages.error(request, " Seller does not exist ") #Django flash messages
+        else:
+            messages.error(request, " Username or password cannot be empty ") #Django flash messages
+
+        
+        
+
+        
+
             
-            else:
-                messages.error(request, "Sellername or password does not exist")
-
-        except Seller.DoesNotExist:
-            #sellerObj = None
-            messages.error(request, "Sellername or password does not exist")
 
 
 
-    else:
-        messages.error(request, "Sellername or password does not exist")
+        
 
     context = {"page": page}
     return render(request, 'store/seller_login.html', context)
