@@ -295,7 +295,6 @@ def registerUser(request):
 
     form = CreateCustomerForm()
     
-
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
         if form.is_valid():
@@ -382,16 +381,6 @@ def loginSeller(request):
         else:
             messages.error(request, " Username or password cannot be empty ") #Django flash messages
 
-        
-        
-
-        
-
-            
-
-
-
-        
 
     context = {"page": page}
     return render(request, 'store/seller_login.html', context)
