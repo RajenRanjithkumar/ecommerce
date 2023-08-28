@@ -563,19 +563,20 @@ def sellerOrders(request):
     #orders_by_seller = [order_item.order for order_item in order_items_for_products]
     print("Tesetin", orders)
     
-
     context = {"orders": orders}
     return render(request, "store/seller_orders.html", context)
 
+
+def sellerOrderDetails(request, pk):
     
-
-
-
-
+    orderItem = OrderItem.objects.get(id = pk)
+    shippingAddress = ShippingAddress.objects.get(order = orderItem.order)
+    # itemWisePrice = orderItem.quantity * orderItem.product.price
+    # print(itemWisePrice)
+    context = {"orderItem":orderItem, "shippingAddress": shippingAddress}
     
-
-        
-
+    return render(request, 'store/seller_order_details.html', context)
+    
 
 def logoutSeller(request):
     

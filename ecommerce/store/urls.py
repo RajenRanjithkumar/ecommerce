@@ -19,6 +19,9 @@ urlpatterns = [
 
     path('seller_products/', views.sellerProducts, name='seller_products'),
     path('seller_products/orders/', views.sellerOrders, name='seller_orders'),
+    path('seller_products/orders/<str:pk>', views.sellerOrderDetails, name='seller_order_details'),
+    
+    
     path('seller_add_product/', views.sellerAddProduct, name='seller_add_product'),
     path('seller_update_product/<str:pk>', views.sellerUpdateProduct, name='seller_update_product'),
     path('seller_delete_product/<str:pk>', views.sellerDeleteProduct, name='seller_delete_product'),

@@ -3,8 +3,8 @@
 {% block content %}
 
 <h1>Active Orders</h1>
-<p>-----------------------------------</p>
-{% for order in orders %}
+<p>----------------------------------------</p>
+<!-- {% for order in orders %}
 
     {% if order.order.complete == True %}
         <p>{{order.order.trasaction_id}}</p>
@@ -15,7 +15,7 @@
         <p>{{order.order.complete}}</p>
         <p>-----------------------------------</p>    
     {% endif %}
-{% endfor %}
+{% endfor %} -->
 
 
 <div class="row">
@@ -71,9 +71,9 @@
                 </div> -->
                 <div style="flex: 0.5;">
                     
-                    <button type="button" class="btn btn-danger" >
+                    <a type="button" class="btn btn-warning" href="{% url 'seller_order_details' orderItem.id %}">
                         Details
-                    </button>
+                    </a>
                 
                 </div>
                 
