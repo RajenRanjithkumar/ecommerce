@@ -1,0 +1,98 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Active Orders</h1>
+<p>-----------------------------------</p>
+{% for order in orders %}
+
+    {% if order.order.complete == True %}
+        <p>{{order.order.trasaction_id}}</p>
+        <p>{{order.product}}</p>
+        <p>{{order.quantity}}</p>
+        <p>{{order.data_added}}</p>
+        <p>{{order.order.customer}}</p>
+        <p>{{order.order.complete}}</p>
+        <p>-----------------------------------</p>    
+    {% endif %}
+{% endfor %}
+
+
+<div class="row">
+
+    <div class="col-lg-12">
+
+        
+
+        <div class="box-element">
+
+            <div class="cart-row">
+
+                <div style="flex: 2;"></div>
+                <div style="flex: 2;"><strong>Item</strong></div>
+                <div style="flex: 1;"><strong>Price</strong></div>
+                <div style="flex: 1;"><strong>Quantity</strong></div>
+                <!-- <div style="flex: 1;"><strong>Total</strong></div> -->
+                <div style="flex: 0.5;"><strong></strong></div>
+
+
+            </div>
+
+            {% for orderItem in orders %}
+            {% if orderItem.order.complete == True %}
+
+            <div class="cart-row">
+
+                <!-- <div style="flex: 2;"> <img class="row-image" src="{% static 'images/placeholder.png' %}" alt=""></div> -->
+                <div style="flex: 2;"> <img class="row-image" src="{{ orderItem.product.imageURL }}" alt=""></div>
+                <div style="flex: 2;">
+                    <p class="quantity">{{ orderItem.product.name }}</p>
+                    <p>Customer: {{orderItem.order.customer}}</p>
+
+                </div>
+                <div style="flex: 1;">${{ orderItem.product.price|floatformat:2 }}/ea</div>
+                <div style="flex: 1;">
+                
+                    <p class="quantity">{{ orderItem.quantity }}</p>
+                    <!-- <div class="quantity">
+
+                        <img data-product={{item.product.id}} data-action="add" class="chg-quantity update-cart" src="{% static 'images/arrow-up.png' %}" >
+                        <img data-product={{item.product.id}} data-action="remove" class="chg-quantity update-cart" src="{% static 'images/arrow-down.png' %}">
+
+                    </div> -->
+                
+                </div>
+                
+                <!-- <div style="flex: 1;">
+
+                    
+                    ${{ orderItem.order.get_cart_total|floatformat:2 }}   
+
+                </div> -->
+                <div style="flex: 0.5;">
+                    
+                    <button type="button" class="btn btn-danger" >
+                        Details
+                    </button>
+                
+                </div>
+                
+                
+
+
+            </div>
+            {% endif %}
+
+            {% endfor %}
+
+
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock content %}

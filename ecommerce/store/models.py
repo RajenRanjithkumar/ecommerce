@@ -10,7 +10,7 @@ class Customer(models.Model):
     email = models.CharField(max_length=200, null=True)
    
     def __str__(self):
-        return self.name
+        return str(self.name)
     
 class Seller(models.Model):
 
@@ -19,7 +19,7 @@ class Seller(models.Model):
     email = models.CharField(max_length=200, null=True)
    
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 # https://stackoverflow.com/questions/34006994/how-to-upload-multiple-images-to-a-blog-post-in-django
@@ -74,17 +74,19 @@ class Images(models.Model):
         return url
     
 
-
-    
 class Order(models.Model):
 
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
     data_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
-    trasacrion_id = models.CharField(max_length=200, null=True)
+    trasaction_id = models.CharField(max_length=200, null=True)
 
+    # def __str__(self):
+    #     return f"Order #{self.pk}"
     def __str__(self):
-        return f"Order #{self.id}"
+        
+        
+        return f"Order {self.id}"
     
     @property
     def shipping(self):
@@ -135,6 +137,8 @@ class ShippingAddress(models.Model):
     data_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.address)
+        if self.address:
+            return self.address
+        return "No Address"
 
 

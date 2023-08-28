@@ -141,24 +141,22 @@
             <!-- <a href="#"class="btn btn-outline-dark">Hello {{request.user.username}}!!</a> -->
 
 
-            <div class="dropdown">
-              <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Hello {{request.user.username}}!!
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Settings</a>
+              <div class="dropdown">
+                <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Hello {{request.user.username}}!!
+                </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Settings</a>
 
-                {% if siteUser == "customer" %}
-                <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
-                {% else %}
-                <a class="dropdown-item" href="{% url 'seller_logout' %}">Sign out</a>
-                {% endif %}
-              
+                    {% if siteUser == "customer" %}
+                    <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
+                    {% else %}
+                    <a class="dropdown-item" href="{% url 'seller_orders' %}">Orders</a>
+                    <a class="dropdown-item" href="{% url 'seller_logout' %}">Sign out</a>
+                    {% endif %}
+                  
+                  </div>
               </div>
-            </div>
-
-
-
 
             {% else %}
 

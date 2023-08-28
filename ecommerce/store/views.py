@@ -175,7 +175,6 @@ def processOrder(request):
          # query to the specific order
         order, created = Order.objects.get_or_create(customer = customer, complete = False) 
         
-
         # else handle for the digital products
 
     else:
@@ -188,7 +187,7 @@ def processOrder(request):
         
 
     total = float(data['form']['total'])
-    order.trasacrion_id = trasaction_id
+    order.trasaction_id = int(trasaction_id)
 
     # to cross check the total cost
 
@@ -197,7 +196,7 @@ def processOrder(request):
     if round(total) == round(order.get_cart_total):
         order.complete = True
 
-    print(order.trasacrion_id)
+    print(order.trasaction_id)
     print(order.customer)
     print(order.complete)
     
@@ -300,13 +299,11 @@ def registerUser(request):
         if form.is_valid():
             
             user = form.save(commit=False)
-
-            
             user.username = user.username.lower()
             user.save()
+            
 
             # #login(request, user)
-
             Customer.objects.create(
 
                 user = user,
@@ -314,7 +311,9 @@ def registerUser(request):
                 email = user.email
 
             )
-            return redirect('login')
+            
+            login(request, user)
+            return redirect('store')
         else:
 
             messages.error(request, "An error occured during registration")
@@ -556,6 +555,17 @@ def sellerDeleteProduct(request, pk):
     
     return redirect("seller_products")
 
+@login_required(login_url='seller_login')
+def sellerOrders(request):
+    
+    products_by_seller = Product.objects.filter(seller= request.user.seller)
+    orders = OrderItem.objects.filter(product__in=products_by_seller)
+    #orders_by_seller = [order_item.order for order_item in order_items_for_products]
+    print("Tesetin", orders)
+    
+
+    context = {"orders": orders}
+    return render(request, "store/seller_orders.html", context)
 
     
 
