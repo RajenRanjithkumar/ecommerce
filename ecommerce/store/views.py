@@ -213,6 +213,10 @@ def processOrder(request):
 
 
             )
+            
+    
+            
+            
 
 
     # print('Data:', request.body)
@@ -327,9 +331,6 @@ def logoutUser(request):
     logout(request)
 
     return redirect('login')
-
-
-
 
 
 
@@ -569,11 +570,55 @@ def sellerOrders(request):
 
 def sellerOrderDetails(request, pk):
     
+    #Get the order details
     orderItem = OrderItem.objects.get(id = pk)
     shippingAddress = ShippingAddress.objects.get(order = orderItem.order)
-    # itemWisePrice = orderItem.quantity * orderItem.product.price
-    # print(itemWisePrice)
-    context = {"orderItem":orderItem, "shippingAddress": shippingAddress}
+    trakingInstance, created = ProductTracking.objects.get_or_create(customer = orderItem.order.customer, orderItem = orderItem)
+    #shipped = trakingInstance.orderSent
+    #itemWisePrice = orderItem.quantity * orderItem.product.price
+    print((trakingInstance.orderSent))
+    print(trakingInstance.trackingID)
+    
+    #Get the courier details from front end
+    if request.method == 'POST':
+        
+        courierName = request.POST.get("Courier_name")
+        trackingId = request.POST.get("tracking_id")
+        
+        
+        print(courierName, trackingId)
+        
+        if courierName != '' and trackingId != '':
+            
+            try:
+                
+                trakingInstance = ProductTracking.objects.filter(orderItem = orderItem).update(courierName = courierName, trackingID = trackingId, orderSent = True)
+            
+                # trakingInstance = ProductTracking.objects.update(
+                      
+                #     customer = orderItem.order.customer,
+                #     orderItem = orderItem,
+                #     courierName = courierName,
+                #     trackingID = trackingId,
+                #     orderSent = True
+                # )
+                
+                return redirect('seller_order_details')
+                
+            except Exception as e:
+                #print("Error", e)
+                messages.error(request, "Error {e}")
+                
+            
+        else:
+            messages.error(request, "Order details cannot be empty")
+    
+    
+        #print(trakingInstance.orderSent)
+
+
+    
+    context = {"orderItem":orderItem, "shippingAddress": shippingAddress, "shipped": trakingInstance}
     
     return render(request, 'store/seller_order_details.html', context)
     

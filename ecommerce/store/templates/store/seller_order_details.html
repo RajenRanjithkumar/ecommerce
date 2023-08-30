@@ -15,41 +15,54 @@
                     <h5>Name: {{orderItem.order.customer}}</h5>
                     <h5>Email: {{orderItem.order.customer.email}}</h5>
                     <br>
-                <h3>Shipping Details</h3>
+                    <h3>Shipping Details</h3>
 
 
-                <h5>Address: {{shippingAddress.address}}</h5>
-                <h5>City: {{shippingAddress.city}}</h5>
-                <h5>State: {{shippingAddress.state}}</h5>
-                <h5>Zipcode: {{shippingAddress.zipcode}}</h5>
-
-                <hr>
-
-                <p>Have you shipped the product ?</p>
-                <input id="form-button" class="btn btn-outline-success" type="submit" value="Yes">
-                
-                <div class="box-element hidden " style="background-color: rgba(241, 241, 241, 0.644);" id="payment-info">
-                    <p>Enter the Shipment details:</p>
-                    <div class="form-field">
-                        <input class="form-control" type="text" name="Courier_name" placeholder="Courier name">
-                    </div>
-
-                    <div class="form-field" >
-                        <input class="form-control" type="text" name="tracking_id" placeholder="Tracking ID...">
-                    </div>
-
-                    <div class="form-field">
-                        <button id="make_payment" class="btn btn-success">Save</button>  
-                    </div>
+                    <h5>Address: {{shippingAddress.address}}</h5>
+                    <h5>City: {{shippingAddress.city}}</h5>
+                    <h5>State: {{shippingAddress.state}}</h5>
+                    <h5>Zipcode: {{shippingAddress.zipcode}}</h5>
                     
-                </div>
+
+                    <hr>
+
+                    {% if shipped.orderSent %}
+                        <h3>Order shipped</h3>
+                        <h6>Courier Name: {{shipped.courierName}}</h6>
+                        <h6>Tracking ID: {{shipped.trackingID}}</h6>
+
+                    {% else %}
+
+                        <p>Have you shipped the product ?</p>
+                        <input id="form-button" class="btn btn-outline-success" type="submit" value="Yes">
+                        
+
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <div class="box-element hidden " style="background-color: rgba(241, 241, 241, 0.644);" id="payment-info">
+                                <p>Enter the Shipment details:</p>
+                                <div class="form-field">
+                                    <input class="form-control" type="text" name="Courier_name" placeholder="Courier name">
+                                </div>
+        
+                                <div class="form-field" >
+                                    <input class="form-control" type="text" name="tracking_id" placeholder="Tracking ID...">
+                                </div>
+        
+                                <div class="form-field">
+                                    <button id="make_payment" type="submit" class="btn btn-success">Save</button>  
+                                </div>
+                                
+                            </div>
+                        </form>
+
+                    {% endif %}
+                    
+                    
 
                 </div>
                 
-                <br>
-                
-
-                
+                <br>     
                 
             </div>
         

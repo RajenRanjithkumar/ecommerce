@@ -140,5 +140,18 @@ class ShippingAddress(models.Model):
         if self.address:
             return self.address
         return "No Address"
+    
+class ProductTracking(models.Model):
+    
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
+    orderItem = models.ForeignKey(OrderItem,on_delete=models.SET_NULL, blank=True, null=True)
+    courierName = models.CharField(max_length=50, default="n/a", blank=True, null=True)
+    trackingID = models.CharField(max_length=50, default="n/a", blank=True, null=True)
+    orderSent = models.BooleanField(default=False, null=True, blank=True)
+    
+    def __str__(self) -> str:
+        return self.trackingID
+    
+    
 
 
