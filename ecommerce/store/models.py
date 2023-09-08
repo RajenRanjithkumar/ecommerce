@@ -85,7 +85,6 @@ class Order(models.Model):
     #     return f"Order #{self.pk}"
     def __str__(self):
         
-        
         return f"Order {self.id}"
     
     @property

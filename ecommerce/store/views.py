@@ -214,10 +214,6 @@ def processOrder(request):
 
             )
             
-    
-            
-            
-
 
     # print('Data:', request.body)
     order.save()
@@ -225,14 +221,47 @@ def processOrder(request):
     return JsonResponse("Payment complete", safe=False)
 
 
+@login_required(login_url='login')
+def userOrders(request):
+    data = cartData(request)
+    cartItems = data['cartItems']
+    siteUser = "customer"
+    
+    customer_order_items = []
+    try:
+        customer_orders = Order.objects.filter(customer = request.user.customer)
+        
+        for order in customer_orders:
+            order_items = OrderItem.objects.filter(order=order)
+            customer_order_items.extend(order_items)
+        
+        #print(customer_orders)
+        print(customer_order_items)
+    except Exception as e:
+        print(e)
+    
+    
+
+    
+    context = {"siteUser": siteUser, "cartItems":cartItems, "orders": customer_order_items}
+    return render(request, 'store/user_orders.html', context)
+    
+    
+    
+def customerOrderDetails(request, pk):
+    
+    
+    orderItem = OrderItem.objects.get(id = pk)
+    shippingAddress = ShippingAddress.objects.get(order = orderItem.order)
+    trakingStatus  = ProductTracking.objects.get(customer = orderItem.order.customer, orderItem = orderItem)
+    
+    
+    context = {"orderItem":orderItem, "shippingAddress": shippingAddress, "shipped": trakingStatus}
+    return render(request, 'store/customer_order_details.html', context)
 
 
 
-
-
-
-
-
+#User Registration and Authentication
 def loginUser(request):
 
     
@@ -567,7 +596,7 @@ def sellerOrders(request):
     context = {"orders": orders}
     return render(request, "store/seller_orders.html", context)
 
-
+@login_required(login_url='seller_login')
 def sellerOrderDetails(request, pk):
     
     #Get the order details
@@ -590,7 +619,7 @@ def sellerOrderDetails(request, pk):
         
         if courierName != '' and trackingId != '':
             
-            try:
+           
                 
                 trakingInstance = ProductTracking.objects.filter(orderItem = orderItem).update(courierName = courierName, trackingID = trackingId, orderSent = True)
             
@@ -603,11 +632,9 @@ def sellerOrderDetails(request, pk):
                 #     orderSent = True
                 # )
                 
-                return redirect('seller_order_details')
+                return redirect('seller_orders')
                 
-            except Exception as e:
-                #print("Error", e)
-                messages.error(request, "Error {e}")
+            
                 
             
         else:

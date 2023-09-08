@@ -112,6 +112,10 @@
 
             {% if siteUser == "customer" %}
 
+            <li class="nav-item inactive">
+              <a class="nav-link" href="{% url 'user_orders' %}">My orders <span class="sr-only"></span></a>
+            </li>
+
             <li class="nav-item active" style="padding-left: 1rem;">
               <form class="form-inline" style="text-align: center;" action="{% url 'store' %}">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">

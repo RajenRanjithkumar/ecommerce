@@ -2,20 +2,8 @@
 {% load static %}
 {% block content %}
 
-<h1>Active Orders</h1>
-<!-- {% for order in orders %}
 
-    {% if order.order.complete == True %}
-        <p>{{order.order.trasaction_id}}</p>
-        <p>{{order.product}}</p>
-        <p>{{order.quantity}}</p>
-        <p>{{order.data_added}}</p>
-        <p>{{order.order.customer}}</p>
-        <p>{{order.order.complete}}</p>
-        <p>-----------------------------------</p>    
-    {% endif %}
-{% endfor %} -->
-
+<h1>My orders</h1>
 
 <div class="row">
 
@@ -47,7 +35,8 @@
                         <div style="flex: 2;"> <img class="row-image" src="{{ orderItem.product.imageURL }}" alt=""></div>
                         <div style="flex: 2;">
                             <p class="quantity">{{ orderItem.product.name }}</p>
-                            <p>Customer: {{orderItem.order.customer}}</p>
+                            <!-- <p>Customer: {{orderItem.order.customer}}</p> -->
+                            <p>Seller: {{orderItem.product.seller}}</p>
 
                         </div>
                         <div style="flex: 1;">${{ orderItem.product.price|floatformat:2 }}/ea</div>
@@ -71,7 +60,7 @@
                         </div> -->
                         <div style="flex: 0.5;">
                             
-                            <a type="button" class="btn btn-warning" href="{% url 'seller_order_details' orderItem.id %}">
+                            <a type="button" class="btn btn-warning" href="{% url 'customer_order_details' orderItem.id %}">
                                 Details
                             </a>
                         
@@ -104,4 +93,5 @@
 
 </div>
 
-{% endblock content %}
+
+{% endblock content%}

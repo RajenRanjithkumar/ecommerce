@@ -1,0 +1,94 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+
+{% block content %}
+<h1>
+    Order Info
+</h1>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="box-element" style="padding: 1.5rem;" id="form-wrapper">
+                    <h3>Transaction id #{{orderItem.order.trasaction_id}}</h3>
+                    <h6>Seller: {{orderItem.product.seller}}</h6>
+                    <h6>Date ordered: {{orderItem.data_added}}</h6>
+                    <h5>Name: {{orderItem.order.customer}}</h5>
+                    <h5>Email: {{orderItem.order.customer.email}}</h5>
+                    
+                    <hr>
+                    <h3>Shipping Details</h3>
+
+
+                    <h5>Address: {{shippingAddress.address}}</h5>
+                    <h5>City: {{shippingAddress.city}}</h5>
+                    <h5>State: {{shippingAddress.state}}</h5>
+                    <h5>Zipcode: {{shippingAddress.zipcode}}</h5>
+                    
+
+                    <hr>
+
+                    {% if shipped.orderSent %}
+                        <h3>Order shipped</h3>
+                        <h6>Status : order shipped</h6>
+                        <h6>Tracking ID: {{shipped.trackingID}}</h6>
+                        <h6>Courier Name: {{shipped.courierName}}</h6>
+                        
+
+                    {% else %}
+
+                        <h6>Status : processing </h6>
+
+                    {% endif %}
+                    
+                    
+
+                </div>
+                
+                <br>     
+                
+            </div>
+        
+            <div class="col-lg-6">
+        
+                <div class="box-element" style="padding: 1.5rem;">
+                   
+                    <a  class="btn btn-outline-dark" href="{% url 'user_orders' %}">&#x2190; Back to Orders</a>
+                        <hr>
+                        <h3>Order Summary</h3>
+                        <hr>
+                        <div class="cart-row">
+
+                            <div style="flex: 2;"></div>
+                            <div style="flex: 2;"><strong>Item</strong></div>
+                            <div style="flex: 1;"><strong>Price</strong></div>
+                            <div style="flex: 1;"><strong>Quantity</strong></div>
+                            
+            
+            
+                        </div>
+                        
+                        <div class="cart-row">
+                            <div style="flex:2"><a href="{% url 'product' orderItem.product.id %}"> <img class="row-image" src="{{ orderItem.product.imageURL }}"> </a></div>
+                            <div style="flex:2"><p>{{orderItem.product}}</p></div>
+                            <div style="flex:1"><p>${{orderItem.product.price|floatformat}}</p></div>
+                            <div style="flex:1"><p>x{{orderItem.quantity}}</p></div>
+                        </div>
+                        
+                        <!-- <h5>Items:   {{order.get_cart_items}}</h5> -->
+                        <h5>Total: ${{orderItem.get_total}}</h5>
+                        
+        
+        
+                </div>
+              
+        
+            </div>  
+        
+        
+        </div>
+
+        
+       
+
+{% endblock content %}
