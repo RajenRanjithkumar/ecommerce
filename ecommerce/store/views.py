@@ -214,7 +214,10 @@ def processOrder(request):
 
             )
             
-
+    ordersItems = OrderItem.objects.filter(order = order)
+    for orderItem in ordersItems:
+        ProductTracking.objects.get_or_create(customer = customer, orderItem = orderItem)
+    
     # print('Data:', request.body)
     order.save()
 
@@ -236,13 +239,12 @@ def userOrders(request):
             customer_order_items.extend(order_items)
         
         #print(customer_orders)
-        print(customer_order_items)
+        #print(customer_order_items)
     except Exception as e:
         print(e)
     
     
 
-    
     context = {"siteUser": siteUser, "cartItems":cartItems, "orders": customer_order_items}
     return render(request, 'store/user_orders.html', context)
     
